@@ -15,6 +15,7 @@
  --text:#233a2c;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{
  margin:0;background:var(--bg);color:var(--text);
  font-family:-apple-system,BlinkMacSystemFont,
@@ -34,12 +35,18 @@ button:disabled{opacity:.5;cursor:not-allowed}
  display:block;font-size:10px;letter-spacing:2px;
  color:#b4d7c2;margin-top:6px;
 }
-.topright{display:flex;align-items:center;gap:16px}
+.topright{
+ display:flex;align-items:center;
+ gap:16px;flex-wrap:wrap;
+}
 .topright button{
  background:#ffffff18;border:1px solid #ffffff55;
  color:white;padding:9px 15px;border-radius:8px;
 }
-main{max-width:1400px;margin:auto;padding:26px 20px 70px}
+main{
+ max-width:1400px;margin:auto;
+ padding:26px 20px 70px;
+}
 .heading{
  display:flex;justify-content:space-between;
  align-items:center;gap:14px;flex-wrap:wrap;
@@ -47,7 +54,10 @@ main{max-width:1400px;margin:auto;padding:26px 20px 70px}
 }
 h1{font-size:23px;margin:0}
 h2{font-size:19px;margin:0}
-.sub{font-size:13px;color:var(--muted);margin-top:7px}
+.sub{
+ font-size:13px;color:var(--muted);
+ margin-top:7px;line-height:1.6;
+}
 .primary{
  background:var(--green);color:white;border:0;
  border-radius:8px;padding:11px 17px;
@@ -66,12 +76,16 @@ h2{font-size:19px;margin:0}
  background:white;border:1px solid var(--border);
  border-radius:12px;padding:22px;
 }
-.card .label{font-size:13px;color:var(--muted)}
+.card .label{
+ font-size:13px;color:var(--muted);
+}
 .card .value{
  font-size:26px;font-weight:700;
  margin-top:14px;overflow-wrap:anywhere;
 }
-.card .hint{font-size:11px;color:#9eada2;margin-top:8px}
+.card .hint{
+ font-size:11px;color:#9eada2;margin-top:8px;
+}
 .panel{
  background:white;border:1px solid var(--border);
  border-radius:12px;margin-bottom:24px;overflow:hidden;
@@ -79,21 +93,30 @@ h2{font-size:19px;margin:0}
 .panel-head{
  display:flex;justify-content:space-between;
  align-items:center;gap:12px;flex-wrap:wrap;
- padding:20px 22px;border-bottom:1px solid var(--border);
+ padding:20px 22px;
+ border-bottom:1px solid var(--border);
 }
-.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.actions{
+ display:flex;gap:10px;align-items:center;
+ flex-wrap:wrap;
+}
 .search{
  border:1px solid #dce7df;border-radius:8px;
- padding:10px 12px;width:220px;max-width:100%;
+ padding:10px 12px;width:260px;max-width:100%;
 }
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:850px}
+table{
+ width:100%;border-collapse:collapse;min-width:1040px;
+}
 th,td{
- padding:15px 18px;text-align:left;
+ padding:16px 15px;text-align:left;
  border-bottom:1px solid #edf1ee;
  font-size:13px;vertical-align:middle;
 }
-th{background:#fafcfb;color:#7c8d82;font-weight:600}
+th{
+ background:#fafcfb;color:#7c8d82;
+ font-weight:600;white-space:nowrap;
+}
 tbody tr:hover{background:#fafcfb}
 .name{font-weight:600}
 .muted{color:var(--muted)}
@@ -106,19 +129,29 @@ tbody tr:hover{background:#fafcfb}
  border-radius:20px;background:#e8f4eb;
  color:#27744b;font-size:12px;
 }
-.pill.grey{background:#edf0ed;color:#77857b}
-.pill.orange{background:#fff1df;color:#ad752d}
-.empty{text-align:center;color:#9aaa9f;padding:35px}
+.pill.grey{
+ background:#edf0ed;color:#77857b;
+}
+.pill.orange{
+ background:#fff1df;color:#ad752d;
+}
+.empty{
+ text-align:center;color:#9aaa9f;padding:45px;
+}
 .notice{
  background:#e8f0eb;border:1px solid #d9e8de;
  color:#577463;border-radius:10px;
  padding:15px 18px;font-size:13px;line-height:1.7;
 }
-.error{color:#bb3535;font-size:13px;min-height:18px}
+.error{
+ color:#bb3535;font-size:13px;
+ min-height:18px;margin:12px 0;
+}
 dialog{
  border:0;border-radius:14px;padding:0;
- width:min(760px,calc(100% - 22px));
- max-height:90vh;box-shadow:0 25px 80px #0003;
+ width:min(860px,calc(100% - 22px));
+ max-height:92vh;
+ box-shadow:0 25px 80px #0003;
 }
 dialog::backdrop{background:#10251bcc}
 .modal-head{
@@ -131,38 +164,56 @@ dialog::backdrop{background:#10251bcc}
  background:none;border:0;font-size:26px;
  color:#778b7c;
 }
-.modal-body{padding:22px 25px;overflow-y:auto;max-height:65vh}
+.modal-body{
+ padding:22px 25px;overflow-y:auto;max-height:67vh;
+}
+.section-title{
+ font-size:16px;font-weight:700;
+ color:var(--green);
+ margin:8px 0 18px;
+ padding-bottom:10px;
+ border-bottom:1px solid var(--border);
+}
 .form-grid{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
  gap:17px;
 }
 .field.full{grid-column:1/-1}
-.field label{display:block;font-size:13px;margin-bottom:8px}
+.field label{
+ display:block;font-size:13px;margin-bottom:8px;
+}
 .field input,.field select,.field textarea{
  width:100%;border:1px solid #d6e3d9;
  border-radius:8px;padding:12px;background:white;
  color:var(--text);outline:none;
 }
-.field input:focus,.field select:focus,.field textarea:focus{
+.field input:focus,.field select:focus,
+.field textarea:focus{
  border-color:var(--green);
 }
-.field textarea{min-height:90px;resize:vertical}
+.field textarea{
+ min-height:85px;resize:vertical;
+}
 .field input:disabled,.field select:disabled,
-.field textarea:disabled{background:#f4f6f4}
+.field textarea:disabled{
+ background:#f4f6f4;
+}
 .modal-foot{
- padding:18px 25px;border-top:1px solid var(--border);
+ padding:18px 25px;
+ border-top:1px solid var(--border);
  display:flex;justify-content:flex-end;gap:10px;
 }
-.banner{
- background:#fff6e6;color:#88642c;
- border:1px solid #f1dfb7;padding:15px 18px;
- border-radius:10px;margin-bottom:18px;
+.summary{
+ display:flex;gap:18px;flex-wrap:wrap;
+ margin-top:12px;color:#718579;font-size:12px;
 }
 @media(max-width:1000px){
- .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cards{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
 }
 @media(max-width:600px){
- .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
  .card{padding:16px}
  .card .value{font-size:20px}
  .form-grid{grid-template-columns:1fr}
@@ -190,19 +241,16 @@ dialog::backdrop{background:#10251bcc}
  <div class="heading">
   <div>
    <h1>集团经营总览</h1>
-   <div class="sub">统一管理集团公司、SPV资产主体及投资项目</div>
+   <div class="sub">
+    集团总部统一管理SPV项目公司及其唯一新能源项目
+   </div>
   </div>
-  <button class="secondary" id="refreshBtn">刷新数据</button>
+  <button class="secondary" id="refreshBtn">
+   刷新数据
+  </button>
  </div>
 
  <div id="globalError" class="error" role="alert"></div>
-
- <div id="parentBanner" class="banner" hidden>
-  集团母公司尚未初始化。
-  <button class="secondary" id="initParentBtn">
-   创建集团母公司
-  </button>
- </div>
 
  <section class="cards">
   <div class="card">
@@ -221,12 +269,12 @@ dialog::backdrop{background:#10251bcc}
    <div class="hint">待接入财务账簿</div>
   </div>
   <div class="card">
-   <div class="label">累计投资额</div>
+   <div class="label">集团累计投资</div>
    <div class="value" id="totalInvestment">—</div>
    <div class="hint">待接入投资台账</div>
   </div>
   <div class="card">
-   <div class="label">累计利润</div>
+   <div class="label">集团累计利润</div>
    <div class="value" id="totalProfit">—</div>
    <div class="hint">待接入财务账簿</div>
   </div>
@@ -236,212 +284,214 @@ dialog::backdrop{background:#10251bcc}
    <div class="hint">待接入现金流水</div>
   </div>
   <div class="card">
-   <div class="label">SPV公司数量</div>
+   <div class="label">SPV项目公司</div>
    <div class="value" id="spvCount">—</div>
-   <div class="hint">集团控股项目公司</div>
+   <div class="hint">一家SPV对应一个项目</div>
   </div>
   <div class="card">
-   <div class="label">投资项目 / 已投运</div>
-   <div class="value" id="projectCount">—</div>
-   <div class="hint">项目总数 / 投运数量</div>
+   <div class="label">运营项目 / 总装机容量</div>
+   <div class="value" id="operatingCount">—</div>
+   <div class="hint" id="capacityHint">—</div>
   </div>
  </section>
 
  <section class="panel">
   <div class="panel-head">
    <div>
-    <h2>SPV项目公司管理</h2>
-    <div class="sub">公司档案、股权结构、注册资本及运营状态</div>
+    <h2>SPV项目公司一体化管理</h2>
+    <div class="sub">
+     公司、股权、项目、投资及运营状态统一管理
+    </div>
    </div>
-   <div class="actions">
-    <input class="search" id="companySearch"
-           placeholder="搜索公司名称或信用代码">
-    <button class="primary manage-only"
-            id="addCompanyBtn" hidden>
-     ＋ 新增SPV公司
-    </button>
-   </div>
-  </div>
-  <div class="table-wrap">
-   <table>
-    <thead>
-     <tr>
-      <th>公司名称</th>
-      <th>统一社会信用代码</th>
-      <th>注册资本</th>
-      <th>实缴资本</th>
-      <th>集团持股</th>
-      <th>状态</th>
-      <th>操作</th>
-     </tr>
-    </thead>
-    <tbody id="companyRows">
-     <tr><td colspan="7" class="empty">正在加载...</td></tr>
-    </tbody>
-   </table>
-  </div>
- </section>
 
- <section class="panel">
-  <div class="panel-head">
-   <div>
-    <h2>投资项目管理</h2>
-    <div class="sub">项目立项、建设、运营及投资情况</div>
-   </div>
    <div class="actions">
-    <input class="search" id="projectSearch"
-           placeholder="搜索项目名称或编号">
-    <button class="primary manage-only"
-            id="addProjectBtn" hidden>
-     ＋ 新增投资项目
+    <input
+     class="search"
+     id="search"
+     placeholder="搜索公司名称、项目名称或编号"
+    >
+    <button
+     class="primary"
+     id="addBtn"
+     hidden
+    >
+     ＋ 新增SPV项目公司
     </button>
    </div>
   </div>
+
   <div class="table-wrap">
    <table>
     <thead>
      <tr>
-      <th>项目名称</th>
-      <th>所属SPV</th>
+      <th>SPV公司</th>
+      <th>新能源项目</th>
       <th>项目类型</th>
       <th>项目状态</th>
       <th>装机容量</th>
       <th>预算投资</th>
+      <th>集团持股</th>
       <th>操作</th>
      </tr>
     </thead>
-    <tbody id="projectRows">
-     <tr><td colspan="7" class="empty">正在加载...</td></tr>
+    <tbody id="rows">
+     <tr>
+      <td colspan="8" class="empty">
+       正在加载...
+      </td>
+     </tr>
     </tbody>
    </table>
   </div>
  </section>
 
  <div class="notice">
-  说明：集团首页汇总各SPV项目公司的经营数据。
-  财务数据将在后续财务模块上线后自动汇总。
-  SPV公司与项目档案目前支持新增、查看和编辑；
-  资产、负债、利润、现金流等数据不会以项目预算冒充。
+  每家SPV公司只对应一个新能源项目。
+  新增时一次创建公司、100%股权记录和项目资料；
+  编辑时同步更新公司及项目。
+  集团资产、负债、利润和现金流将在后续财务模块上线后自动汇总，
+  不使用项目预算或注册资本冒充财务指标。
  </div>
 </main>
 
-<!-- SPV公司编辑弹窗 -->
-<dialog id="companyDialog">
- <form id="companyForm">
+<!-- SPV公司及项目统一弹窗 -->
+<dialog id="editor">
+ <form id="editorForm">
   <div class="modal-head">
-   <h2 id="companyDialogTitle">新增SPV公司</h2>
-   <button class="close" type="button"
-           data-close="companyDialog">×</button>
+   <h2 id="editorTitle">新增SPV项目公司</h2>
+   <button
+    class="close"
+    type="button"
+    id="closeTop"
+   >×</button>
   </div>
 
   <div class="modal-body">
-   <input type="hidden" name="id">
+   <input type="hidden" name="company_id">
+
+   <div class="section-title">
+    一、SPV公司资料
+   </div>
 
    <div class="form-grid">
     <div class="field full">
      <label>公司全称 *</label>
-     <input name="name" maxlength="200" required>
+     <input
+      name="company_name"
+      maxlength="200"
+      required
+     >
     </div>
+
     <div class="field">
      <label>公司简称</label>
-     <input name="short_name" maxlength="100">
+     <input
+      name="company_short_name"
+      maxlength="100"
+     >
     </div>
+
     <div class="field">
      <label>统一社会信用代码</label>
      <input name="credit_code" maxlength="50">
     </div>
+
     <div class="field">
      <label>法定代表人</label>
-     <input name="legal_representative" maxlength="100">
+     <input
+      name="legal_representative"
+      maxlength="100"
+     >
     </div>
+
     <div class="field">
      <label>公司状态</label>
-     <select name="status">
+     <select name="company_status">
       <option value="active">正常</option>
       <option value="inactive">停用</option>
       <option value="closed">注销</option>
      </select>
     </div>
+
     <div class="field full">
      <label>注册地址</label>
-     <input name="registered_address" maxlength="500">
+     <input
+      name="registered_address"
+      maxlength="500"
+     >
     </div>
+
     <div class="field">
      <label>注册资本（元）</label>
-     <input name="registered_capital" type="number"
-            min="0" step="0.01">
+     <input
+      name="registered_capital"
+      type="number" min="0" step="0.01"
+     >
     </div>
+
     <div class="field">
      <label>实缴资本（元）</label>
-     <input name="paid_in_capital" type="number"
-            min="0" step="0.01">
+     <input
+      name="paid_in_capital"
+      type="number" min="0" step="0.01"
+     >
     </div>
+
     <div class="field">
      <label>成立日期</label>
      <input name="established_date" type="date">
     </div>
+
     <div class="field">
      <label>集团持股比例</label>
      <input value="100%" disabled>
     </div>
+
     <div class="field full">
-     <label>备注</label>
-     <textarea name="notes" maxlength="3000"></textarea>
+     <label>公司备注</label>
+     <textarea
+      name="company_notes"
+      maxlength="3000"
+     ></textarea>
     </div>
    </div>
-   <div class="error" id="companyError" role="alert"></div>
-  </div>
 
-  <div class="modal-foot">
-   <button class="secondary" type="button"
-           data-close="companyDialog">取消</button>
-   <button class="primary" id="saveCompanyBtn"
-           type="submit">保存公司</button>
-  </div>
- </form>
-</dialog>
-
-<!-- 投资项目编辑弹窗 -->
-<dialog id="projectDialog">
- <form id="projectForm">
-  <div class="modal-head">
-   <h2 id="projectDialogTitle">新增投资项目</h2>
-   <button class="close" type="button"
-           data-close="projectDialog">×</button>
-  </div>
-
-  <div class="modal-body">
-   <input type="hidden" name="id">
+   <div class="section-title" style="margin-top:28px">
+    二、唯一新能源项目资料
+   </div>
 
    <div class="form-grid">
     <div class="field full">
      <label>项目名称 *</label>
-     <input name="name" maxlength="200" required>
+     <input
+      name="project_name"
+      maxlength="200"
+      required
+     >
     </div>
+
     <div class="field">
      <label>项目编号</label>
-     <input name="code" maxlength="100">
+     <input
+      name="project_code"
+      maxlength="100"
+     >
     </div>
+
     <div class="field">
-     <label>所属SPV公司 *</label>
-     <select name="company_id" id="projectCompany" required>
-      <option value="">请选择</option>
-     </select>
-    </div>
-    <div class="field">
-     <label>项目类型</label>
-     <select name="type">
+     <label>项目类型 *</label>
+     <select name="project_type" required>
       <option value="">请选择</option>
       <option value="solar">屋顶光伏</option>
       <option value="storage">储能</option>
       <option value="wind">风电</option>
-      <option value="real_estate">不动产</option>
-      <option value="other">其他投资</option>
+      <option value="other">其他新能源</option>
      </select>
     </div>
+
     <div class="field">
      <label>项目状态</label>
-     <select name="status">
+     <select name="project_status">
       <option value="planning">筹划中</option>
       <option value="approved">已立项/备案</option>
       <option value="construction">建设中</option>
@@ -451,72 +501,73 @@ dialog::backdrop{background:#10251bcc}
       <option value="disposed">已处置</option>
      </select>
     </div>
+
     <div class="field full">
      <label>项目地址</label>
-     <input name="location" maxlength="500">
+     <input
+      name="project_location"
+      maxlength="500"
+     >
     </div>
+
     <div class="field">
      <label>装机容量（kW）</label>
-     <input name="capacity_kw" type="number"
-            min="0" step="0.01">
+     <input
+      name="capacity_kw"
+      type="number" min="0" step="0.01"
+     >
     </div>
+
     <div class="field">
      <label>预算投资（元）</label>
-     <input name="budget_amount" type="number"
-            min="0" step="0.01">
+     <input
+      name="budget_amount"
+      type="number" min="0" step="0.01"
+     >
     </div>
+
     <div class="field">
      <label>实际投资（元）</label>
-     <input name="actual_investment" type="number"
-            min="0" step="0.01">
+     <input
+      name="actual_investment"
+      type="number" min="0" step="0.01"
+     >
     </div>
+
     <div class="field">
      <label>开工日期</label>
      <input name="start_date" type="date">
     </div>
+
     <div class="field">
      <label>投运日期</label>
      <input name="operation_date" type="date">
     </div>
+
     <div class="field full">
-     <label>项目说明</label>
-     <textarea name="notes" maxlength="3000"></textarea>
+     <label>项目备注</label>
+     <textarea
+      name="project_notes"
+      maxlength="3000"
+     ></textarea>
     </div>
    </div>
-   <div class="error" id="projectError" role="alert"></div>
+
+   <div id="editorError" class="error" role="alert"></div>
   </div>
 
   <div class="modal-foot">
-   <button class="secondary" type="button"
-           data-close="projectDialog">取消</button>
-   <button class="primary" id="saveProjectBtn"
-           type="submit">保存项目</button>
-  </div>
- </form>
-</dialog>
+   <button
+    class="secondary"
+    id="cancelBtn"
+    type="button"
+   >取消</button>
 
-<!-- 母公司初始化弹窗 -->
-<dialog id="parentDialog">
- <form id="parentForm">
-  <div class="modal-head">
-   <h2>初始化集团母公司</h2>
-   <button class="close" type="button"
-           data-close="parentDialog">×</button>
-  </div>
-  <div class="modal-body">
-   <p class="sub">
-    仅允许初始化一次。请输入母公司工商登记全称。
-   </p>
-   <div class="field">
-    <label>集团母公司名称 *</label>
-    <input name="name" maxlength="200" required>
-   </div>
-   <div class="error" id="parentError"></div>
-  </div>
-  <div class="modal-foot">
-   <button class="secondary" type="button"
-           data-close="parentDialog">取消</button>
-   <button class="primary" type="submit">确认创建</button>
+   <button
+    class="primary"
+    id="saveBtn"
+    type="submit"
+   >保存SPV项目公司</button>
   </div>
  </form>
 </dialog>
@@ -525,25 +576,15 @@ dialog::backdrop{background:#10251bcc}
 "use strict";
 
 const API = "https://api-xuwen.shuofengtechnology.com";
+const $ = id => document.getElementById(id);
 
 const state = {
  user: null,
  canManage: false,
- canInitialize: false,
- companies: [],
- projects: [],
- parent: null
+ records: []
 };
 
-const $ = id => document.getElementById(id);
-
-const COMPANY_STATUS = {
- active: "正常",
- inactive: "停用",
- closed: "注销"
-};
-
-const PROJECT_STATUS = {
+const STATUS = {
  planning: "筹划中",
  approved: "已立项",
  construction: "建设中",
@@ -553,15 +594,14 @@ const PROJECT_STATUS = {
  disposed: "已处置"
 };
 
-const PROJECT_TYPE = {
+const TYPES = {
  solar: "屋顶光伏",
  storage: "储能",
  wind: "风电",
- real_estate: "不动产",
- other: "其他投资"
+ other: "其他新能源"
 };
 
-async function api(path, method = "GET", body = null) {
+async function api(path, method = "GET", data = null) {
  const options = {
   method,
   credentials: "include",
@@ -570,233 +610,294 @@ async function api(path, method = "GET", body = null) {
   }
  };
 
- if (body !== null) {
-  options.body = JSON.stringify(body);
+ if (data !== null) {
+  options.body = JSON.stringify(data);
  }
 
  const response = await fetch(API + path, options);
- const data = await response.json();
 
- if (!response.ok || !data.success) {
-  const err = new Error(data.error || "请求失败");
-  err.status = response.status;
-  throw err;
+ let result;
+ try {
+  result = await response.json();
+ } catch {
+  throw new Error("服务器响应格式错误");
  }
 
- return data;
+ if (!response.ok || !result.success) {
+  const error = new Error(
+   result.error || "请求失败"
+  );
+  error.status = response.status;
+  throw error;
+ }
+
+ return result;
 }
 
 function yuan(value) {
- if (value === null || value === undefined ||
+ if (value === null ||
+     value === undefined ||
      value === "") return "—";
 
  const n = Number(value);
 
- return Number.isFinite(n)
-  ? n.toLocaleString("zh-CN", {
-      maximumFractionDigits: 2
-    }) + " 元"
-  : "—";
+ if (!Number.isFinite(n)) return "—";
+
+ return n.toLocaleString("zh-CN", {
+  maximumFractionDigits: 2
+ }) + " 元";
 }
 
 function number(value) {
- return value === null || value === undefined
-  ? "—"
-  : Number(value).toLocaleString("zh-CN");
+ if (value === null ||
+     value === undefined ||
+     value === "") return "—";
+
+ return Number(value).toLocaleString("zh-CN", {
+  maximumFractionDigits: 2
+ });
 }
 
-function cell(text, className = "") {
+function cell(value, className = "") {
  const td = document.createElement("td");
- td.textContent = text === null ||
-                  text === undefined ||
-                  text === "" ? "—" : String(text);
+
+ td.textContent =
+  value === null ||
+  value === undefined ||
+  value === ""
+   ? "—"
+   : String(value);
+
  if (className) td.className = className;
  return td;
 }
 
-function button(label, action) {
+function action(label, callback) {
  const btn = document.createElement("button");
  btn.type = "button";
  btn.className = "link";
  btn.textContent = label;
- btn.addEventListener("click", action);
+ btn.addEventListener("click", callback);
  return btn;
 }
 
-function emptyRow(tbody, colspan, message) {
+function empty(message) {
+ const tbody = $("rows");
  tbody.replaceChildren();
+
  const tr = document.createElement("tr");
  const td = cell(message, "empty");
- td.colSpan = colspan;
+ td.colSpan = 8;
+
  tr.appendChild(td);
  tbody.appendChild(tr);
 }
 
-function companyName(id) {
- const company = state.companies.find(
-  x => x.xuwen_id === id
- );
-
- return company
-  ? company.xuwen_company_short_name ||
-    company.xuwen_company_name
-  : "未知公司";
-}
-
-function renderCompanies() {
- const keyword = $("companySearch").value
+function render() {
+ const keyword = $("search").value
   .trim().toLowerCase();
 
- const companies = state.companies
-  .filter(x => x.xuwen_company_type === "spv")
-  .filter(x => {
-   const text = [
-    x.xuwen_company_name,
-    x.xuwen_company_short_name,
-    x.xuwen_credit_code
-   ].join(" ").toLowerCase();
+ const records = state.records.filter(r => {
+  const c = r.company || {};
+  const p = r.project || {};
 
-   return text.includes(keyword);
-  });
-
- const tbody = $("companyRows");
- tbody.replaceChildren();
-
- if (!companies.length) {
-  emptyRow(tbody, 7, "没有符合条件的SPV公司");
-  return;
- }
-
- for (const company of companies) {
-  const tr = document.createElement("tr");
-
-  tr.appendChild(
-   cell(company.xuwen_company_name, "name")
-  );
-  tr.appendChild(
-   cell(company.xuwen_credit_code)
-  );
-  tr.appendChild(
-   cell(yuan(company.xuwen_registered_capital))
-  );
-  tr.appendChild(
-   cell(yuan(company.xuwen_paid_in_capital))
-  );
-  tr.appendChild(cell("100%"));
-  tr.appendChild(
-   cell(COMPANY_STATUS[company.xuwen_status] ||
-        company.xuwen_status)
-  );
-
-  const actions = document.createElement("td");
-  actions.appendChild(button("查看", () => {
-   openCompany(company, true);
-  }));
-
-  if (state.canManage) {
-   actions.appendChild(button("编辑", () => {
-    openCompany(company, false);
-   }));
-  }
-
-  tr.appendChild(actions);
-  tbody.appendChild(tr);
- }
-}
-
-function renderProjects() {
- const keyword = $("projectSearch").value
-  .trim().toLowerCase();
-
- const projects = state.projects.filter(x => {
-  const text = [
-   x.xuwen_project_name,
-   x.xuwen_project_code,
-   companyName(x.xuwen_company_id)
+  const content = [
+   c.xuwen_company_name,
+   c.xuwen_company_short_name,
+   c.xuwen_credit_code,
+   p.xuwen_project_name,
+   p.xuwen_project_code,
+   p.xuwen_project_location
   ].join(" ").toLowerCase();
 
-  return text.includes(keyword);
+  return content.includes(keyword);
  });
 
- const tbody = $("projectRows");
- tbody.replaceChildren();
-
- if (!projects.length) {
-  emptyRow(tbody, 7, "没有符合条件的投资项目");
+ if (!records.length) {
+  empty("暂无符合条件的SPV项目公司");
   return;
  }
 
- for (const project of projects) {
+ const tbody = $("rows");
+ tbody.replaceChildren();
+
+ for (const record of records) {
+  const c = record.company;
+  const p = record.project || {};
+
   const tr = document.createElement("tr");
 
   tr.appendChild(
-   cell(project.xuwen_project_name, "name")
+   cell(c.xuwen_company_name, "name")
   );
+
   tr.appendChild(
-   cell(companyName(project.xuwen_company_id))
+   cell(p.xuwen_project_name)
   );
-  tr.appendChild(
-   cell(PROJECT_TYPE[project.xuwen_project_type] ||
-        project.xuwen_project_type)
-  );
-  tr.appendChild(
-   cell(PROJECT_STATUS[project.xuwen_project_status] ||
-        project.xuwen_project_status)
-  );
+
   tr.appendChild(
    cell(
-    project.xuwen_capacity_kw == null
-     ? "—"
-     : number(project.xuwen_capacity_kw) + " kW"
+    TYPES[p.xuwen_project_type] ||
+    p.xuwen_project_type
    )
   );
+
   tr.appendChild(
-   cell(yuan(project.xuwen_budget_amount))
+   cell(
+    STATUS[p.xuwen_project_status] ||
+    p.xuwen_project_status
+   )
   );
 
+  tr.appendChild(
+   cell(
+    p.xuwen_capacity_kw == null
+     ? "—"
+     : number(p.xuwen_capacity_kw) + " kW"
+   )
+  );
+
+  tr.appendChild(
+   cell(yuan(p.xuwen_budget_amount))
+  );
+
+  tr.appendChild(cell("100%"));
+
   const actions = document.createElement("td");
-  actions.appendChild(button("查看", () => {
-   openProject(project, true);
-  }));
+
+  actions.appendChild(
+   action("查看", () => openEditor(record, true))
+  );
 
   if (state.canManage) {
-   actions.appendChild(button("编辑", () => {
-    openProject(project, false);
-   }));
+   actions.appendChild(
+    action("编辑", () => openEditor(record, false))
+   );
   }
 
   tr.appendChild(actions);
   tbody.appendChild(tr);
  }
+}
+
+function setForm(form, values) {
+ for (const field of form.elements) {
+  if (!field.name) continue;
+  field.value = values[field.name] ?? "";
+ }
+}
+
+function getForm(form) {
+ const result = {};
+
+ for (const field of form.elements) {
+  if (!field.name || field.disabled) continue;
+  result[field.name] = field.value;
+ }
+
+ return result;
+}
+
+function setReadonly(readonly) {
+ const form = $("editorForm");
+
+ for (const field of form.elements) {
+  if (!field.name || field.type === "hidden") {
+   continue;
+  }
+  field.disabled = readonly;
+ }
+
+ $("saveBtn").hidden = readonly;
+}
+
+function openEditor(record = null, readonly = false) {
+ const form = $("editorForm");
+ form.reset();
+
+ $("editorError").textContent = "";
+
+ let values = {
+  company_status: "active",
+  project_status: "planning"
+ };
+
+ if (record) {
+  const c = record.company;
+  const p = record.project || {};
+
+  values = {
+   company_id: c.xuwen_id,
+   company_name: c.xuwen_company_name,
+   company_short_name:
+    c.xuwen_company_short_name,
+   credit_code: c.xuwen_credit_code,
+   legal_representative:
+    c.xuwen_legal_representative,
+   registered_address:
+    c.xuwen_registered_address,
+   registered_capital:
+    c.xuwen_registered_capital,
+   paid_in_capital:
+    c.xuwen_paid_in_capital,
+   established_date:
+    c.xuwen_established_date,
+   company_status: c.xuwen_status,
+   company_notes: c.xuwen_notes,
+
+   project_name: p.xuwen_project_name,
+   project_code: p.xuwen_project_code,
+   project_type: p.xuwen_project_type,
+   project_location: p.xuwen_project_location,
+   project_status: p.xuwen_project_status,
+   capacity_kw: p.xuwen_capacity_kw,
+   budget_amount: p.xuwen_budget_amount,
+   actual_investment:
+    p.xuwen_actual_investment,
+   start_date: p.xuwen_start_date,
+   operation_date: p.xuwen_operation_date,
+   project_notes: p.xuwen_notes
+  };
+ }
+
+ setForm(form, values);
+ setReadonly(readonly);
+
+ $("editorTitle").textContent =
+  readonly
+   ? "查看SPV项目公司"
+   : record
+    ? "编辑SPV项目公司"
+    : "新增SPV项目公司";
+
+ $("editor").showModal();
 }
 
 function renderMetrics(data) {
- $("spvCount").textContent = data.spv_count ?? 0;
-
- $("projectCount").textContent =
-  (data.project_count ?? 0) + " / " +
-  (data.operating_project_count ?? 0);
-
  const f = data.financial_metrics || {};
 
- $("totalAssets").textContent = yuan(f.total_assets);
+ $("totalAssets").textContent =
+  yuan(f.total_assets);
  $("totalLiabilities").textContent =
   yuan(f.total_liabilities);
- $("netAssets").textContent = yuan(f.net_assets);
+ $("netAssets").textContent =
+  yuan(f.net_assets);
  $("totalInvestment").textContent =
   yuan(f.total_investment);
- $("totalProfit").textContent = yuan(f.profit);
- $("cashFlow").textContent = yuan(f.cash_flow);
-}
+ $("totalProfit").textContent =
+  yuan(f.profit);
+ $("cashFlow").textContent =
+  yuan(f.cash_flow);
 
-function updatePermissions() {
- document.querySelectorAll(".manage-only")
-  .forEach(el => {
-   el.hidden = !state.canManage;
-  });
+ $("spvCount").textContent =
+  data.spv_count ?? 0;
 
- $("parentBanner").hidden =
-  Boolean(state.parent) || !state.canInitialize;
+ $("operatingCount").textContent =
+  data.operating_count ?? 0;
+
+ $("capacityHint").textContent =
+  "总装机容量：" +
+  number(data.capacity_kw) + " kW";
 }
 
 async function refresh() {
@@ -805,17 +906,13 @@ async function refresh() {
  try {
   const data = await api("/api/group/overview");
 
-  state.companies = data.companies || [];
-  state.projects = data.projects || [];
-  state.parent = data.parent || null;
+  state.records = data.records || [];
   state.canManage = Boolean(data.can_manage);
-  state.canInitialize =
-   Boolean(data.can_initialize_parent);
+
+  $("addBtn").hidden = !state.canManage;
 
   renderMetrics(data);
-  updatePermissions();
-  renderCompanies();
-  renderProjects();
+  render();
 
  } catch (error) {
   if (error.status === 401) {
@@ -832,151 +929,20 @@ async function refresh() {
  }
 }
 
-function setFormValues(form, values) {
- for (const field of form.elements) {
-  if (!field.name) continue;
-
-  field.value = values[field.name] ?? "";
- }
-}
-
-function getFormValues(form) {
- const result = {};
-
- for (const field of form.elements) {
-  if (!field.name || field.disabled) continue;
-  result[field.name] = field.value;
- }
-
- return result;
-}
-
-function readonly(form, yes, saveButton) {
- for (const field of form.elements) {
-  if (!field.name || field.type === "hidden") continue;
-  field.disabled = yes;
- }
-
- saveButton.hidden = yes;
-}
-
-function openCompany(company = null, view = false) {
- const form = $("companyForm");
- form.reset();
-
- $("companyError").textContent = "";
-
- const values = company ? {
-  id: company.xuwen_id,
-  name: company.xuwen_company_name,
-  short_name: company.xuwen_company_short_name,
-  credit_code: company.xuwen_credit_code,
-  legal_representative:
-   company.xuwen_legal_representative,
-  registered_address:
-   company.xuwen_registered_address,
-  registered_capital:
-   company.xuwen_registered_capital,
-  paid_in_capital: company.xuwen_paid_in_capital,
-  established_date: company.xuwen_established_date,
-  status: company.xuwen_status,
-  notes: company.xuwen_notes
- } : { status: "active" };
-
- setFormValues(form, values);
-
- $("companyDialogTitle").textContent =
-  view ? "查看SPV公司" :
-  company ? "编辑SPV公司" : "新增SPV公司";
-
- readonly(form, view, $("saveCompanyBtn"));
- $("companyDialog").showModal();
-}
-
-function fillCompanyOptions() {
- const select = $("projectCompany");
- select.replaceChildren();
-
- const empty = document.createElement("option");
- empty.value = "";
- empty.textContent = "请选择SPV公司";
- select.appendChild(empty);
-
- for (const company of state.companies) {
-  if (company.xuwen_company_type !== "spv") continue;
-
-  const option = document.createElement("option");
-  option.value = company.xuwen_id;
-  option.textContent = company.xuwen_company_name;
-  select.appendChild(option);
- }
-}
-
-function openProject(project = null, view = false) {
- const form = $("projectForm");
- form.reset();
-
- $("projectError").textContent = "";
- fillCompanyOptions();
-
- const values = project ? {
-  id: project.xuwen_id,
-  name: project.xuwen_project_name,
-  code: project.xuwen_project_code,
-  company_id: project.xuwen_company_id,
-  type: project.xuwen_project_type,
-  location: project.xuwen_project_location,
-  status: project.xuwen_project_status,
-  capacity_kw: project.xuwen_capacity_kw,
-  budget_amount: project.xuwen_budget_amount,
-  actual_investment: project.xuwen_actual_investment,
-  start_date: project.xuwen_start_date,
-  operation_date: project.xuwen_operation_date,
-  notes: project.xuwen_notes
- } : { status: "planning" };
-
- setFormValues(form, values);
-
- $("projectDialogTitle").textContent =
-  view ? "查看投资项目" :
-  project ? "编辑投资项目" : "新增投资项目";
-
- readonly(form, view, $("saveProjectBtn"));
- $("projectDialog").showModal();
-}
-
-async function submitForm(
- form, endpoint, dialog, errorBox, submitButton
-) {
- const values = getFormValues(form);
- errorBox.textContent = "";
- submitButton.disabled = true;
-
- try {
-  await api(endpoint, "POST", values);
-  dialog.close();
-  await refresh();
- } catch (error) {
-  errorBox.textContent = error.message;
- } finally {
-  submitButton.disabled = false;
- }
-}
-
 async function initialize() {
  try {
-  const me = await api("/api/me");
+  const result = await api("/api/me");
 
-  state.user = me.user;
+  state.user = result.user;
 
-  if (me.user.xuwen_must_change_password) {
+  if (state.user.xuwen_must_change_password) {
    location.replace("login.html");
    return;
   }
 
   $("currentUser").textContent =
-   me.user.xuwen_full_name ||
-   me.user.xuwen_username;
+   state.user.xuwen_full_name ||
+   state.user.xuwen_username;
 
   await refresh();
 
@@ -991,97 +957,45 @@ async function initialize() {
 
 $("refreshBtn").addEventListener("click", refresh);
 
-$("companySearch").addEventListener(
- "input", renderCompanies
-);
+$("search").addEventListener("input", render);
 
-$("projectSearch").addEventListener(
- "input", renderProjects
-);
+$("addBtn").addEventListener("click", () => {
+ openEditor();
+});
 
-$("addCompanyBtn").addEventListener(
- "click", () => openCompany()
-);
+$("closeTop").addEventListener("click", () => {
+ $("editor").close();
+});
 
-$("addProjectBtn").addEventListener(
- "click", () => {
-  if (!state.companies.some(
-   c => c.xuwen_company_type === "spv"
-  )) {
-   alert("请先创建SPV项目公司");
-   return;
-  }
-  openProject();
- }
-);
+$("cancelBtn").addEventListener("click", () => {
+ $("editor").close();
+});
 
-$("initParentBtn").addEventListener(
- "click", () => {
-  $("parentForm").reset();
-  $("parentError").textContent = "";
-  $("parentDialog").showModal();
- }
-);
-
-document.querySelectorAll("[data-close]")
- .forEach(btn => {
-  btn.addEventListener("click", () => {
-   $(btn.dataset.close).close();
-  });
- });
-
-$("companyForm").addEventListener(
+$("editorForm").addEventListener(
  "submit", async event => {
   event.preventDefault();
 
-  await submitForm(
-   event.currentTarget,
-   "/api/companies/save",
-   $("companyDialog"),
-   $("companyError"),
-   $("saveCompanyBtn")
-  );
- }
-);
-
-$("projectForm").addEventListener(
- "submit", async event => {
-  event.preventDefault();
-
-  await submitForm(
-   event.currentTarget,
-   "/api/projects/save",
-   $("projectDialog"),
-   $("projectError"),
-   $("saveProjectBtn")
-  );
- }
-);
-
-$("parentForm").addEventListener(
- "submit", async event => {
-  event.preventDefault();
-
+  const button = $("saveBtn");
   const form = event.currentTarget;
-  const submit = form.querySelector(
-   'button[type="submit"]'
-  );
 
-  $("parentError").textContent = "";
-  submit.disabled = true;
+  $("editorError").textContent = "";
+
+  button.disabled = true;
+  button.textContent = "正在保存...";
 
   try {
-   await api("/api/group/initialize", "POST", {
-    name: form.elements.name.value.trim()
-   });
+   const data = getForm(form);
 
-   $("parentDialog").close();
+   await api("/api/spv/save", "POST", data);
+
+   $("editor").close();
    await refresh();
 
   } catch (error) {
-   $("parentError").textContent = error.message;
+   $("editorError").textContent = error.message;
   } finally {
-   submit.disabled = false;
+   button.disabled = false;
+   button.textContent = "保存SPV项目公司";
   }
  }
 );
@@ -1093,7 +1007,7 @@ $("logoutBtn").addEventListener(
    location.replace("login.html");
   } catch (error) {
    $("globalError").textContent =
-    "退出失败，请重试：" + error.message;
+    "退出失败：" + error.message;
   }
  }
 );
