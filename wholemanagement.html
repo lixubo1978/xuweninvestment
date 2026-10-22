@@ -824,7 +824,7 @@ async function refresh() {
   }
 
   if (error.status === 403) {
-   location.replace("change-password.html");
+   location.replace("login.html");
    return;
   }
 
@@ -970,7 +970,7 @@ async function initialize() {
   state.user = me.user;
 
   if (me.user.xuwen_must_change_password) {
-   location.replace("change-password.html");
+   location.replace("login.html");
    return;
   }
 
