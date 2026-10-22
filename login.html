@@ -17,7 +17,10 @@ body{
  background:white;border-radius:18px;padding:40px;
  box-shadow:0 15px 50px #123b2415;
 }
-.brand{color:#176448;font-size:13px;font-weight:700;letter-spacing:3px}
+.brand{
+ color:#176448;font-size:13px;font-weight:700;
+ letter-spacing:3px;
+}
 h1{font-size:25px;margin:18px 0 8px}
 .sub{color:#84938a;font-size:13px;margin-bottom:30px}
 label{display:block;margin:18px 0 8px;font-size:14px}
@@ -32,74 +35,307 @@ button{
  font-size:16px;cursor:pointer;
 }
 button:disabled{opacity:.6}
-#error{color:#bd3434;font-size:13px;min-height:20px;margin-top:16px}
-.footer{text-align:center;color:#a2aea6;font-size:12px;margin-top:22px}
+.secondary{
+ margin-top:12px;background:#fff;color:#176448;
+ border:1px solid #b9d2c4;
+}
+#error{
+ color:#bd3434;font-size:13px;
+ min-height:20px;margin-top:16px;
+}
+#message{
+ color:#176448;font-size:13px;
+ min-height:20px;margin-top:12px;
+}
+.footer{
+ text-align:center;color:#a2aea6;
+ font-size:12px;margin-top:22px;
+}
+[hidden]{display:none!important}
+.hint{
+ color:#84938a;font-size:12px;
+ line-height:1.7;margin-top:9px;
+}
+@media(max-width:480px){
+ .panel{padding:28px 24px}
+}
 </style>
 </head>
 <body>
+
 <div class="panel">
  <div class="brand">XUWEN INVESTMENT</div>
- <h1>序文投资管理系统</h1>
- <div class="sub">集团与SPV项目资产管理平台</div>
 
- <form id="form">
-  <label for="username">用户名</label>
-  <input id="username" autocomplete="username"
-         placeholder="请输入用户名" required>
+ <!-- 登录区域 -->
+ <section id="loginSection">
+  <h1>序文投资管理系统</h1>
+  <div class="sub">集团与SPV项目资产管理平台</div>
 
-  <label for="password">密码</label>
-  <input id="password" type="password"
-         autocomplete="current-password"
-         placeholder="请输入密码" required>
+  <form id="form">
+   <label for="username">用户名</label>
+   <input
+    id="username"
+    autocomplete="username"
+    placeholder="请输入用户名"
+    required
+   >
 
-  <button id="submit" type="submit">登录管理系统</button>
- </form>
+   <label for="password">密码</label>
+   <input
+    id="password"
+    type="password"
+    autocomplete="current-password"
+    placeholder="请输入密码"
+    required
+   >
+
+   <button id="submit" type="submit">
+    登录管理系统
+   </button>
+  </form>
+ </section>
+
+ <!-- 首次修改密码区域 -->
+ <section id="changeSection" hidden>
+  <h1>首次登录修改密码</h1>
+  <div class="sub">
+   为保障账号安全，首次登录必须修改初始密码。
+  </div>
+
+  <form id="changeForm">
+   <label for="oldPassword">原密码</label>
+   <input
+    id="oldPassword"
+    type="password"
+    autocomplete="current-password"
+    placeholder="请输入原密码"
+    required
+   >
+
+   <label for="newPassword">新密码</label>
+   <input
+    id="newPassword"
+    type="password"
+    autocomplete="new-password"
+    placeholder="请输入新密码"
+    minlength="8"
+    maxlength="128"
+    required
+   >
+   <div class="hint">
+    密码至少8位，允许纯数字，不强制字母或特殊符号。
+   </div>
+
+   <label for="confirmPassword">确认新密码</label>
+   <input
+    id="confirmPassword"
+    type="password"
+    autocomplete="new-password"
+    placeholder="请再次输入新密码"
+    minlength="8"
+    maxlength="128"
+    required
+   >
+
+   <button id="changeSubmit" type="submit">
+    确认修改密码
+   </button>
+
+   <button
+    id="backLogin"
+    class="secondary"
+    type="button"
+   >
+    返回登录
+   </button>
+  </form>
+ </section>
+
  <div id="error" role="alert"></div>
- <div class="footer">© 序文投资 · 内部管理系统</div>
+ <div id="message" role="status"></div>
+
+ <div class="footer">
+  © 序文投资 · 内部管理系统
+ </div>
 </div>
 
 <script>
-const API = "https://api-xuwen.shuofengtechnology.com";
-const form = document.getElementById("form");
-const button = document.getElementById("submit");
-const errorBox = document.getElementById("error");
+"use strict";
 
-form.addEventListener("submit", async event => {
- event.preventDefault();
- button.disabled = true;
- button.textContent = "正在登录...";
- errorBox.textContent = "";
+const API = "https://api-xuwen.shuofengtechnology.com";
+
+const $ = id => document.getElementById(id);
+
+const form = $("form");
+const button = $("submit");
+const errorBox = $("error");
+const messageBox = $("message");
+
+const changeForm = $("changeForm");
+const changeButton = $("changeSubmit");
+
+let pendingUsername = "";
+let pendingOldPassword = "";
+
+async function api(path, body) {
+ const response = await fetch(API + path, {
+  method: "POST",
+  credentials: "include",
+  headers: {
+   "Content-Type": "application/json"
+  },
+  body: JSON.stringify(body)
+ });
+
+ let data;
 
  try {
-  const response = await fetch(API + "/api/login", {
-   method: "POST",
-   credentials: "include",
-   headers: {"Content-Type":"application/json"},
-   body: JSON.stringify({
-    username: document.getElementById("username").value.trim(),
-    password: document.getElementById("password").value
-   })
+  data = await response.json();
+ } catch {
+  throw new Error("服务器响应格式错误");
+ }
+
+ if (!response.ok || !data.success) {
+  throw new Error(data.error || "操作失败");
+ }
+
+ return data;
+}
+
+function clearMessages() {
+ errorBox.textContent = "";
+ messageBox.textContent = "";
+}
+
+function showLogin() {
+ clearMessages();
+
+ $("loginSection").hidden = false;
+ $("changeSection").hidden = true;
+
+ changeForm.reset();
+
+ pendingOldPassword = "";
+ pendingUsername = "";
+
+ $("password").value = "";
+}
+
+function showChangePassword() {
+ clearMessages();
+
+ $("loginSection").hidden = true;
+ $("changeSection").hidden = false;
+
+ changeForm.reset();
+
+ $("oldPassword").value = pendingOldPassword;
+
+ $("newPassword").focus();
+}
+
+// 正常登录
+form.addEventListener("submit", async event => {
+ event.preventDefault();
+
+ button.disabled = true;
+ button.textContent = "正在登录...";
+ clearMessages();
+
+ const username = $("username").value.trim();
+ const password = $("password").value;
+
+ try {
+  const data = await api("/api/login", {
+   username,
+   password
   });
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-   throw new Error(data.error || "登录失败");
-  }
-
   if (data.user.must_change_password) {
-   location.replace("change-password.html");
+   pendingUsername = username;
+   pendingOldPassword = password;
+
+   showChangePassword();
+
   } else {
+   pendingOldPassword = "";
    location.replace("wholemanagement.html");
   }
 
  } catch (error) {
   errorBox.textContent = error.message;
+
  } finally {
   button.disabled = false;
   button.textContent = "登录管理系统";
  }
 });
+
+// 首次修改密码
+changeForm.addEventListener("submit", async event => {
+ event.preventDefault();
+
+ clearMessages();
+
+ const oldPassword = $("oldPassword").value;
+ const newPassword = $("newPassword").value;
+ const confirmPassword = $("confirmPassword").value;
+
+ if (newPassword.length < 8) {
+  errorBox.textContent = "新密码至少需要8位";
+  return;
+ }
+
+ if (newPassword !== confirmPassword) {
+  errorBox.textContent = "两次输入的新密码不一致";
+  return;
+ }
+
+ if (newPassword === oldPassword) {
+  errorBox.textContent = "新密码不能与原密码相同";
+  return;
+ }
+
+ changeButton.disabled = true;
+ changeButton.textContent = "正在修改密码...";
+
+ try {
+  await api("/api/change-password", {
+   old_password: oldPassword,
+   new_password: newPassword
+  });
+
+  pendingOldPassword = "";
+  pendingUsername = "";
+
+  showLogin();
+
+  messageBox.textContent =
+   "密码修改成功！请使用新密码重新登录。";
+
+ } catch (error) {
+  errorBox.textContent = error.message;
+
+ } finally {
+  changeButton.disabled = false;
+  changeButton.textContent = "确认修改密码";
+ }
+});
+
+// 返回登录
+$("backLogin").addEventListener("click", async () => {
+ try {
+  await api("/api/logout", {});
+ } catch {
+  // 即使退出请求失败，也清除当前页面的输入状态
+ }
+
+ showLogin();
+});
+
+// 防止用户从旧链接进入占位页后无法操作
+// 本页同时承担登录和首次改密功能
+
 </script>
 </body>
 </html>
