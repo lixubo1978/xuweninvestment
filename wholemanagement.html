@@ -12,46 +12,11 @@
 <script>
 'use strict';const API='https://api-xuwen.shuofengtechnology.com',$=x=>document.getElementById(x);let records=[],canManage=false;
 const statuses={planning:'筹划中',approved:'已备案',construction:'建设中',commissioning:'调试验收',operating:'运营中',suspended:'暂停',disposed:'已处置'};const types={solar:'屋顶光伏',storage:'储能',wind:'风电',other:'其他新能源'};
-let redirecting=false,sessionCheckRunning=false;
-function backToLogin(){if(redirecting)return;redirecting=true;location.replace('login.html')}
-function sessionExpired(status,data){
- if(status===401)return true;
- // 某些版本的接口使用403表示会话已过期；普通权限不足不退出。
- if(status===403)return /(?:登录|会话|session|token|unauthoriz|expired|未认证|身份验证)/i.test(String(data?.error||''));
- return false;
-}
-async function api(path,method='GET',data){
- const r=await fetch(API+path,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined});
- let d;try{d=await r.json()}catch{throw new Error('服务器响应格式错误（HTTP '+r.status+'）')}
- if(sessionExpired(r.status,d)){backToLogin();throw new Error('登录已失效，正在返回登录页')}
- if(!r.ok||!d.success)throw new Error(d.error||'请求失败（HTTP '+r.status+'）');
- return d;
-}
-async function checkSession(){
- if(redirecting||sessionCheckRunning||document.hidden)return;
- sessionCheckRunning=true;
- try{
-  const d=await api('/api/me');
-  if(d.user?.xuwen_must_change_password){backToLogin();return}
-  $('user').textContent=d.user?.xuwen_full_name||'';
- }catch(e){if(!redirecting)$('error').textContent='会话检查失败：'+e.message}
- finally{sessionCheckRunning=false}
-}
+async function api(path,method='GET',data){const r=await fetch(API+path,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'请求失败');return d}
 function td(t){const e=document.createElement('td');e.textContent=t??'—';return e}function link(t,fn){const b=document.createElement('button');b.className='link';b.textContent=t;b.onclick=fn;return b}function yuan(n){return n==null?'—':Number(n).toLocaleString('zh-CN')+' 元'}
 function render(){const key=$('search').value.toLowerCase(),body=$('rows');body.replaceChildren();let found=records.filter(r=>(r.company.xuwen_company_name+' '+(r.project?.xuwen_project_name||'')).toLowerCase().includes(key));if(!found.length){const tr=document.createElement('tr'),e=td('暂无符合条件的SPV公司');e.colSpan=8;tr.append(e);body.append(tr);return}for(const r of found){const c=r.company,p=r.project||{},tr=document.createElement('tr');tr.append(td(c.xuwen_company_name),td(p.xuwen_project_name),td(types[p.xuwen_project_type]||'—'),td(statuses[p.xuwen_project_status]||'—'),td(p.xuwen_capacity_kw==null?'—':p.xuwen_capacity_kw+' kW'),td(yuan(p.xuwen_budget_amount)),td('100%'));const action=td('');action.append(link('进入管理平台 →',()=>location.href='spvmanagement.html?company_id='+encodeURIComponent(c.xuwen_id)),link('查看',()=>edit(r,true)));if(canManage)action.append(link('编辑',()=>edit(r,false)));tr.append(action);body.append(tr)}}
 function edit(r=null,readonly=false){const f=$('form');f.reset();const c=r?.company||{},p=r?.project||{};const map={company_id:c.xuwen_id,company_name:c.xuwen_company_name,company_short_name:c.xuwen_company_short_name,credit_code:c.xuwen_credit_code,legal_representative:c.xuwen_legal_representative,company_status:c.xuwen_status,registered_address:c.xuwen_registered_address,registered_capital:c.xuwen_registered_capital,paid_in_capital:c.xuwen_paid_in_capital,established_date:c.xuwen_established_date,company_notes:c.xuwen_notes,project_name:p.xuwen_project_name,project_code:p.xuwen_project_code,project_type:p.xuwen_project_type,project_status:p.xuwen_project_status,project_location:p.xuwen_project_location,capacity_kw:p.xuwen_capacity_kw,budget_amount:p.xuwen_budget_amount,actual_investment:p.xuwen_actual_investment,start_date:p.xuwen_start_date,operation_date:p.xuwen_operation_date,project_notes:p.xuwen_notes};for(const e of f.elements)if(e.name){e.value=map[e.name]??e.value;e.disabled=readonly} $('save').hidden=readonly;$('dialogTitle').textContent=readonly?'查看SPV公司':r?'编辑SPV公司':'新增SPV公司';$('formError').textContent='';$('dialog').showModal()}
 async function refresh(){try{$('error').textContent='';const d=await api('/api/group/overview');records=d.records||[];canManage=!!d.can_manage;$('add').hidden=!canManage;$('count').textContent=d.spv_count??0;$('operating').textContent=d.operating_count??0;$('capacity').textContent='总装机 '+(d.capacity_kw??0)+' kW';render()}catch(e){$('error').textContent=e.message}}
 $('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,values={};for(const x of f.elements)if(x.name&&!x.disabled)values[x.name]=x.value;$('save').disabled=true;try{await api('/api/spv/save','POST',values);$('dialog').close();await refresh()}catch(err){$('formError').textContent=err.message}finally{$('save').disabled=false}};
-$('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>edit();$('search').oninput=render;$('refresh').onclick=refresh;
-$('logout').onclick=async()=>{try{await api('/api/logout','POST',{})}catch(e){}backToLogin()};
-(async()=>{try{
- const d=await api('/api/me');
- if(d.user?.xuwen_must_change_password){backToLogin();return}
- $('user').textContent=d.user?.xuwen_full_name||'';
- await refresh();
-}catch(e){if(!redirecting)$('error').textContent=e.message}})();
-// 每60秒核验一次；从后台切回页面时立即核验。
-setInterval(checkSession,60000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkSession()});
-window.addEventListener('focus',checkSession);
+$('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>edit();$('search').oninput=render;$('refresh').onclick=refresh;$('logout').onclick=async()=>{await api('/api/logout','POST',{});location.replace('login.html')};(async()=>{try{const d=await api('/api/me');if(d.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=d.user.xuwen_full_name||'';await refresh()}catch(e){$('error').textContent=e.message}})();
 </script></body></html>
