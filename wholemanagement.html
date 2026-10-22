@@ -1,22 +1,151 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>序文投资｜集团经营总览</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6f4;color:#234131;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:#174632;color:white;padding:18px 30px;display:flex;justify-content:space-between;align-items:center}.top button{color:white;background:transparent;border:1px solid #ffffff70;padding:8px 15px;border-radius:8px}main{max-width:1400px;margin:auto;padding:30px 20px}.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}h1{font-size:24px;margin:0 0 6px}h2{font-size:19px;margin:0}.muted{font-size:13px;color:#849589}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:22px 0}.card,.panel{background:white;border:1px solid #e0e9e2;border-radius:12px;padding:20px}.card strong{display:block;font-size:25px;margin:12px 0}.btn{background:#176448;color:white;border:0;border-radius:8px;padding:11px 15px}.outline{background:white;color:#176448;border:1px solid #bcd4c3;border-radius:8px;padding:10px 14px}.search{padding:10px;border:1px solid #d9e5dc;border-radius:8px}.scroll{overflow:auto;margin-top:18px}table{border-collapse:collapse;width:100%;min-width:900px}th,td{padding:13px;text-align:left;border-bottom:1px solid #edf2ee;font-size:13px}th{color:#8c9b90;background:#f9fbfa}.link{border:0;background:none;color:#176448;font-weight:600;padding:5px}.error{color:#b63c3c;font-size:13px;min-height:18px}.note{padding:15px;background:#e7f0e9;color:#587463;border-radius:9px;margin-top:20px;font-size:13px}dialog{width:min(800px,calc(100% - 25px));max-height:92vh;overflow:auto;border:0;border-radius:13px;padding:24px;box-shadow:0 30px 80px #0003}dialog::backdrop{background:#12261ac0}.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field label{display:block;font-size:13px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d9e6dc;border-radius:8px}.full{grid-column:1/-1}.foot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}@media(max-width:850px){.cards{grid-template-columns:1fr 1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head><body>
-<header class="top"><strong>序文投资 · 集团管理中心</strong><div><span id="user"></span> <button id="logout">退出登录</button></div></header>
-<main><div class="head"><div><h1>集团经营总览</h1><div class="muted">集团统一管理SPV公司，每家公司只对应一个新能源项目</div></div><button class="outline" id="refresh">刷新数据</button></div><div id="error" class="error"></div>
-<section class="cards"><div class="card"><span class="muted">集团总资产</span><strong>—</strong><small class="muted">待接入财务账簿</small></div><div class="card"><span class="muted">集团总负债</span><strong>—</strong><small class="muted">待接入财务账簿</small></div><div class="card"><span class="muted">集团净资产</span><strong>—</strong><small class="muted">待接入财务账簿</small></div><div class="card"><span class="muted">集团累计投资</span><strong>—</strong><small class="muted">待接入投资台账</small></div><div class="card"><span class="muted">集团累计利润</span><strong>—</strong><small class="muted">待接入财务账簿</small></div><div class="card"><span class="muted">集团现金流</span><strong>—</strong><small class="muted">待接入资金流水</small></div><div class="card"><span class="muted">SPV公司数量</span><strong id="count">—</strong><small class="muted">一家SPV一个项目</small></div><div class="card"><span class="muted">运营项目 / 总装机</span><strong id="operating">—</strong><small class="muted" id="capacity">—</small></div></section>
-<section class="panel"><div class="head"><div><h2>SPV项目公司一体化管理</h2><div class="muted">新增、编辑、查看公司及唯一项目；进入各SPV的15模块工作台</div></div><div><input id="search" class="search" placeholder="搜索公司或项目"> <button id="add" class="btn" hidden>＋ 新增SPV项目公司</button></div></div><div class="scroll"><table><thead><tr><th>SPV公司</th><th>项目名称</th><th>项目类型</th><th>项目状态</th><th>装机容量</th><th>预算投资</th><th>集团持股</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="8">正在加载...</td></tr></tbody></table></div></section><div class="note">集团首页仅汇总经营数据；进入某家SPV后使用独立的15模块项目管理平台。未接入财务账簿的指标不显示虚构金额。</div></main>
-<dialog id="dialog"><form id="form"><h2 id="dialogTitle">新增SPV项目公司</h2><p class="muted">公司和唯一新能源项目统一保存</p><div class="form">
-<input type="hidden" name="company_id">
-<div class="field full"><label>SPV公司全称 *</label><input name="company_name" required></div><div class="field"><label>公司简称</label><input name="company_short_name"></div><div class="field"><label>统一社会信用代码</label><input name="credit_code"></div><div class="field"><label>法定代表人</label><input name="legal_representative"></div><div class="field"><label>公司状态</label><select name="company_status"><option value="active">正常</option><option value="inactive">停用</option><option value="closed">注销</option></select></div><div class="field full"><label>注册地址</label><input name="registered_address"></div><div class="field"><label>注册资本（元）</label><input type="number" min="0" step="0.01" name="registered_capital"></div><div class="field"><label>实缴资本（元）</label><input type="number" min="0" step="0.01" name="paid_in_capital"></div><div class="field"><label>成立日期</label><input type="date" name="established_date"></div><div class="field full"><label>公司备注</label><textarea name="company_notes"></textarea></div>
-<div class="field full"><h2>唯一新能源项目</h2></div><div class="field full"><label>项目名称 *</label><input name="project_name" required></div><div class="field"><label>项目编号</label><input name="project_code"></div><div class="field"><label>项目类型 *</label><select name="project_type" required><option value="solar">屋顶光伏</option><option value="storage">储能</option><option value="wind">风电</option><option value="other">其他新能源</option></select></div><div class="field"><label>项目状态</label><select name="project_status"><option value="planning">筹划中</option><option value="approved">已备案</option><option value="construction">建设中</option><option value="commissioning">调试验收</option><option value="operating">运营中</option><option value="suspended">暂停</option><option value="disposed">已处置</option></select></div><div class="field full"><label>项目地址</label><input name="project_location"></div><div class="field"><label>装机容量（kW）</label><input name="capacity_kw" type="number" min="0" step="0.01"></div><div class="field"><label>预算投资（元）</label><input name="budget_amount" type="number" min="0" step="0.01"></div><div class="field"><label>实际投资（元）</label><input name="actual_investment" type="number" min="0" step="0.01"></div><div class="field"><label>开工日期</label><input name="start_date" type="date"></div><div class="field"><label>投运日期</label><input name="operation_date" type="date"></div><div class="field full"><label>项目备注</label><textarea name="project_notes"></textarea></div></div><p id="formError" class="error"></p><div class="foot"><button class="outline" type="button" id="cancel">取消</button><button class="btn" id="save" type="submit">保存</button></div></form></dialog>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>序文投资｜登录</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f1f5f2;color:#193b2c;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif}
+.panel{width:min(430px,calc(100% - 32px));background:white;border-radius:18px;padding:40px;box-shadow:0 15px 50px #123b2415}
+.brand{color:#176448;font-size:13px;font-weight:700;letter-spacing:3px}
+h1{font-size:25px;margin:18px 0 8px}.sub{color:#84938a;font-size:13px;margin-bottom:30px}
+label{display:block;margin:18px 0 8px;font-size:14px}
+input:not([type=checkbox]){width:100%;padding:14px;border:1px solid #d7e2da;border-radius:9px;font-size:16px;outline:none}
+input:focus{border-color:#176448}
+button{width:100%;margin-top:26px;padding:15px;border:0;border-radius:9px;background:#176448;color:white;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6}.secondary{margin-top:12px;background:#fff;color:#176448;border:1px solid #b9d2c4}
+#error{color:#bd3434;font-size:13px;min-height:20px;margin-top:16px}
+#message{color:#176448;font-size:13px;min-height:20px;margin-top:12px}
+.footer{text-align:center;color:#a2aea6;font-size:12px;margin-top:22px}
+[hidden]{display:none!important}.hint{color:#84938a;font-size:12px;line-height:1.7;margin-top:9px}
+.remember{display:flex;align-items:center;gap:9px;margin-top:17px;font-size:14px;cursor:pointer}
+.remember input{width:17px;height:17px;accent-color:#176448;margin:0}
+.remember-note{font-size:11px;color:#84938a;margin-top:7px;line-height:1.5}
+@media(max-width:480px){.panel{padding:28px 24px}}
+</style>
+</head>
+<body>
+<div class="panel">
+ <div class="brand">XUWEN INVESTMENT</div>
+ <section id="loginSection">
+  <h1>序文投资管理系统</h1>
+  <div class="sub">集团与SPV项目资产管理平台</div>
+  <form id="form" autocomplete="on">
+   <label for="username">用户名</label>
+   <input id="username" name="username" autocomplete="username" placeholder="请输入用户名" required>
+   <label for="password">密码</label>
+   <input id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required>
+   <label class="remember" for="rememberLogin">
+    <input id="rememberLogin" type="checkbox">
+    <span>记住用户名和密码</span>
+   </label>
+   <div class="remember-note">用户名由本站记住；密码由浏览器密码管理器安全保存。首次使用请在浏览器提示时选择“保存密码”。</div>
+   <button id="submit" type="submit">登录管理系统</button>
+  </form>
+ </section>
+ <section id="changeSection" hidden>
+  <h1>首次登录修改密码</h1>
+  <div class="sub">为保障账号安全，首次登录必须修改初始密码。</div>
+  <form id="changeForm">
+   <label for="oldPassword">原密码</label>
+   <input id="oldPassword" name="old_password" type="password" autocomplete="current-password" placeholder="请输入原密码" required>
+   <label for="newPassword">新密码</label>
+   <input id="newPassword" name="new_password" type="password" autocomplete="new-password" placeholder="请输入新密码" minlength="8" maxlength="128" required>
+   <div class="hint">密码至少8位，允许纯数字，不强制字母或特殊符号。</div>
+   <label for="confirmPassword">确认新密码</label>
+   <input id="confirmPassword" name="confirm_password" type="password" autocomplete="new-password" placeholder="请再次输入新密码" minlength="8" maxlength="128" required>
+   <button id="changeSubmit" type="submit">确认修改密码</button>
+   <button id="backLogin" class="secondary" type="button">返回登录</button>
+  </form>
+ </section>
+ <div id="error" role="alert"></div>
+ <div id="message" role="status"></div>
+ <div class="footer">© 序文投资 · 内部管理系统</div>
+</div>
 <script>
-'use strict';const API='https://api-xuwen.shuofengtechnology.com',$=x=>document.getElementById(x);let records=[],canManage=false;
-const statuses={planning:'筹划中',approved:'已备案',construction:'建设中',commissioning:'调试验收',operating:'运营中',suspended:'暂停',disposed:'已处置'};const types={solar:'屋顶光伏',storage:'储能',wind:'风电',other:'其他新能源'};
-async function api(path,method='GET',data){const r=await fetch(API+path,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'请求失败');return d}
-function td(t){const e=document.createElement('td');e.textContent=t??'—';return e}function link(t,fn){const b=document.createElement('button');b.className='link';b.textContent=t;b.onclick=fn;return b}function yuan(n){return n==null?'—':Number(n).toLocaleString('zh-CN')+' 元'}
-function render(){const key=$('search').value.toLowerCase(),body=$('rows');body.replaceChildren();let found=records.filter(r=>(r.company.xuwen_company_name+' '+(r.project?.xuwen_project_name||'')).toLowerCase().includes(key));if(!found.length){const tr=document.createElement('tr'),e=td('暂无符合条件的SPV公司');e.colSpan=8;tr.append(e);body.append(tr);return}for(const r of found){const c=r.company,p=r.project||{},tr=document.createElement('tr');tr.append(td(c.xuwen_company_name),td(p.xuwen_project_name),td(types[p.xuwen_project_type]||'—'),td(statuses[p.xuwen_project_status]||'—'),td(p.xuwen_capacity_kw==null?'—':p.xuwen_capacity_kw+' kW'),td(yuan(p.xuwen_budget_amount)),td('100%'));const action=td('');action.append(link('进入管理平台 →',()=>location.href='spvmanagement.html?company_id='+encodeURIComponent(c.xuwen_id)),link('查看',()=>edit(r,true)));if(canManage)action.append(link('编辑',()=>edit(r,false)));tr.append(action);body.append(tr)}}
-function edit(r=null,readonly=false){const f=$('form');f.reset();const c=r?.company||{},p=r?.project||{};const map={company_id:c.xuwen_id,company_name:c.xuwen_company_name,company_short_name:c.xuwen_company_short_name,credit_code:c.xuwen_credit_code,legal_representative:c.xuwen_legal_representative,company_status:c.xuwen_status,registered_address:c.xuwen_registered_address,registered_capital:c.xuwen_registered_capital,paid_in_capital:c.xuwen_paid_in_capital,established_date:c.xuwen_established_date,company_notes:c.xuwen_notes,project_name:p.xuwen_project_name,project_code:p.xuwen_project_code,project_type:p.xuwen_project_type,project_status:p.xuwen_project_status,project_location:p.xuwen_project_location,capacity_kw:p.xuwen_capacity_kw,budget_amount:p.xuwen_budget_amount,actual_investment:p.xuwen_actual_investment,start_date:p.xuwen_start_date,operation_date:p.xuwen_operation_date,project_notes:p.xuwen_notes};for(const e of f.elements)if(e.name){e.value=map[e.name]??e.value;e.disabled=readonly} $('save').hidden=readonly;$('dialogTitle').textContent=readonly?'查看SPV公司':r?'编辑SPV公司':'新增SPV公司';$('formError').textContent='';$('dialog').showModal()}
-async function refresh(){try{$('error').textContent='';const d=await api('/api/group/overview');records=d.records||[];canManage=!!d.can_manage;$('add').hidden=!canManage;$('count').textContent=d.spv_count??0;$('operating').textContent=d.operating_count??0;$('capacity').textContent='总装机 '+(d.capacity_kw??0)+' kW';render()}catch(e){$('error').textContent=e.message}}
-$('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,values={};for(const x of f.elements)if(x.name&&!x.disabled)values[x.name]=x.value;$('save').disabled=true;try{await api('/api/spv/save','POST',values);$('dialog').close();await refresh()}catch(err){$('formError').textContent=err.message}finally{$('save').disabled=false}};
-$('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>edit();$('search').oninput=render;$('refresh').onclick=refresh;$('logout').onclick=async()=>{await api('/api/logout','POST',{});location.replace('login.html')};(async()=>{try{const d=await api('/api/me');if(d.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=d.user.xuwen_full_name||'';await refresh()}catch(e){$('error').textContent=e.message}})();
-</script></body></html>
+"use strict";
+const API = "https://api-xuwen.shuofengtechnology.com";
+const $ = id => document.getElementById(id);
+const form = $("form");
+const button = $("submit");
+const errorBox = $("error");
+const messageBox = $("message");
+const changeForm = $("changeForm");
+const changeButton = $("changeSubmit");
+const REMEMBER_KEY = "xuwen_remember_username";
+let pendingOldPassword = "";
+try {
+ const remembered = localStorage.getItem(REMEMBER_KEY);
+ if (remembered !== null) {
+  $("username").value = remembered;
+  $("rememberLogin").checked = true;
+ }
+} catch (_) {}
+$("rememberLogin").addEventListener("change", () => {
+ if (!$("rememberLogin").checked) {
+  try { localStorage.removeItem(REMEMBER_KEY); } catch (_) {}
+ }
+});
+async function api(path, body) {
+ const response = await fetch(API + path, {
+  method:"POST",credentials:"include",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(body)
+ });
+ let data;
+ try { data = await response.json(); }
+ catch { throw new Error("服务器响应格式错误"); }
+ if (!response.ok || !data.success) throw new Error(data.error || "操作失败");
+ return data;
+}
+function clearMessages(){errorBox.textContent="";messageBox.textContent="";}
+function showLogin(){
+ clearMessages();$("loginSection").hidden=false;$("changeSection").hidden=true;
+ changeForm.reset();pendingOldPassword="";$("password").value="";
+}
+function showChangePassword(){
+ clearMessages();$("loginSection").hidden=true;$("changeSection").hidden=false;
+ changeForm.reset();$("oldPassword").value=pendingOldPassword;$("newPassword").focus();
+}
+form.addEventListener("submit",async event=>{
+ event.preventDefault();button.disabled=true;button.textContent="正在登录...";clearMessages();
+ const username=$("username").value.trim();
+ const password=$("password").value;
+ try {
+  const data=await api("/api/login",{username,password});
+  try {
+   if ($("rememberLogin").checked) localStorage.setItem(REMEMBER_KEY,username);
+   else localStorage.removeItem(REMEMBER_KEY);
+  } catch (_) {}
+  if (data.user.must_change_password) {
+   pendingOldPassword=password;showChangePassword();
+  } else {
+   pendingOldPassword="";location.replace("wholemanagement.html");
+  }
+ } catch(error){errorBox.textContent=error.message;}
+ finally{button.disabled=false;button.textContent="登录管理系统";}
+});
+changeForm.addEventListener("submit",async event=>{
+ event.preventDefault();clearMessages();
+ const oldPassword=$("oldPassword").value;
+ const newPassword=$("newPassword").value;
+ const confirmPassword=$("confirmPassword").value;
+ if(newPassword.length<8){errorBox.textContent="新密码至少需要8位";return;}
+ if(newPassword!==confirmPassword){errorBox.textContent="两次输入的新密码不一致";return;}
+ if(newPassword===oldPassword){errorBox.textContent="新密码不能与原密码相同";return;}
+ changeButton.disabled=true;changeButton.textContent="正在修改密码...";
+ try {
+  await api("/api/change-password",{old_password:oldPassword,new_password:newPassword});
+  pendingOldPassword="";showLogin();
+  messageBox.textContent="密码修改成功！请使用新密码重新登录。";
+ } catch(error){errorBox.textContent=error.message;}
+ finally{changeButton.disabled=false;changeButton.textContent="确认修改密码";}
+});
+$("backLogin").addEventListener("click",async()=>{
+ try{await api("/api/logout",{});}catch(_){}
+ showLogin();
+});
+</script>
+</body>
+</html>
