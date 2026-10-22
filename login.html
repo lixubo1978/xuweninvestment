@@ -40,7 +40,7 @@ button:disabled{opacity:.6}.secondary{margin-top:12px;background:#fff;color:#176
     <input id="rememberLogin" type="checkbox">
     <span>记住用户名和密码</span>
    </label>
-   <div class="remember-note">用户名由本站记住；密码由浏览器密码管理器安全保存。首次使用请在浏览器提示时选择“保存密码”。</div>
+   <div class="remember-note">用户名由本站记住；密码尝试交由浏览器密码管理器保存（需浏览器支持及允许）。本站不以明文形式存储密码。</div>
    <button id="submit" type="submit">登录管理系统</button>
   </form>
  </section>
@@ -102,11 +102,20 @@ async function api(path, body) {
 function clearMessages(){errorBox.textContent="";messageBox.textContent="";}
 function showLogin(){
  clearMessages();$("loginSection").hidden=false;$("changeSection").hidden=true;
- changeForm.reset();pendingOldPassword="";$("password").value="";
+ changeForm.reset();pendingOldPassword="";if(!$("rememberLogin").checked)$("password").value="";
 }
 function showChangePassword(){
  clearMessages();$("loginSection").hidden=true;$("changeSection").hidden=false;
  changeForm.reset();$("oldPassword").value=pendingOldPassword;$("newPassword").focus();
+}
+async function requestPasswordSave(username,password){
+ if (!$('rememberLogin').checked) return;
+ try {
+  if ('PasswordCredential' in window && navigator.credentials && navigator.credentials.store) {
+   const credential = new PasswordCredential({id:username,password,name:username});
+   await navigator.credentials.store(credential);
+  }
+ } catch (_) { /* 浏览器可能不支持或用户拒绝保存；不影响登录 */ }
 }
 form.addEventListener("submit",async event=>{
  event.preventDefault();button.disabled=true;button.textContent="正在登录...";clearMessages();
@@ -118,6 +127,7 @@ form.addEventListener("submit",async event=>{
    if ($("rememberLogin").checked) localStorage.setItem(REMEMBER_KEY,username);
    else localStorage.removeItem(REMEMBER_KEY);
   } catch (_) {}
+  if (!data.user.must_change_password) await requestPasswordSave(username,password);
   if (data.user.must_change_password) {
    pendingOldPassword=password;showChangePassword();
   } else {
@@ -137,6 +147,7 @@ changeForm.addEventListener("submit",async event=>{
  changeButton.disabled=true;changeButton.textContent="正在修改密码...";
  try {
   await api("/api/change-password",{old_password:oldPassword,new_password:newPassword});
+  await requestPasswordSave($('username').value.trim(),newPassword);
   pendingOldPassword="";showLogin();
   messageBox.textContent="密码修改成功！请使用新密码重新登录。";
  } catch(error){errorBox.textContent=error.message;}
