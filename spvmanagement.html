@@ -61,15 +61,15 @@ async function fmMoveFolder(f){try{const dest=fmChooseDestination();if(dest===un
 async function fmDeleteFolder(f){
  if(!confirm('确定永久删除文件夹“'+f.xuwen_name+'”及其全部子文件夹和文件吗？\n\n系统会自动取消未完成的上传任务，此操作不可恢复。'))return;
  if(fmBusy){fmCancelRequested=true;if(fmCurrentController)fmCurrentController.abort();fmStatus('正在取消上传任务并删除文件夹...')}
- let total=0,round=0;
+ let total=0,folderTotal=0,round=0;
  try{
   $('docError').textContent='';
   while(true){
-   if(++round>10000)throw new Error('删除批次过多，请刷新后重试');
-   fmStatus('正在删除“'+f.xuwen_name+'”... 已删除文件 '+total+' 个');
+   if(++round>50000)throw new Error('删除批次过多，请刷新后重试');
+   fmStatus('正在分批删除“'+f.xuwen_name+'”... 已删除文件 '+total+' 个、文件夹 '+folderTotal+' 个');
    const result=await api('/api/spv/fs/folder/delete','POST',{company_id:id,id:f.xuwen_id,confirm_delete:true});
-   total+=result.deleted_files||0;
-   if(result.done){fmStatus('删除完成：'+total+' 个文件、'+(result.deleted_folders||0)+' 个文件夹');break}
+   total+=result.deleted_files||0;folderTotal+=result.deleted_folders||0;
+   if(result.done){fmStatus('删除完成：'+total+' 个文件、'+folderTotal+' 个文件夹');break}
   }
   await loadDocs();
  }catch(e){docMessage(e);fmStatus('删除未完成，请刷新后重试。已删除文件 '+total+' 个')}
