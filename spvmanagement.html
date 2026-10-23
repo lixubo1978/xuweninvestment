@@ -2,13 +2,27 @@
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>序文投资｜SPV项目公司管理</title>
 <style>
 :root{--green:#176448;--bg:#f3f6f4;--line:#e0e9e2;--ink:#213a2b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:#174632;color:white;padding:17px 28px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.top a{color:#e5f4e9;text-decoration:none}.top strong{font-size:19px}.layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 65px)}aside{background:white;border-right:1px solid var(--line);padding:20px 12px}.nav{width:100%;text-align:left;padding:13px 14px;background:transparent;border:0;border-radius:9px;color:#3b5845;margin-bottom:4px}.nav.active{background:#e5f3e9;color:var(--green);font-weight:700}main{padding:26px;max-width:1450px;width:100%}h1{margin:0 0 7px;font-size:24px}h2{font-size:18px;margin:0}.muted{color:#83958a;font-size:13px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:23px 0}.card,.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:20px}.card b{display:block;font-size:24px;margin-top:12px}.head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.btn{background:var(--green);color:white;border:0;border-radius:8px;padding:11px 16px}.outline{border:1px solid #b8d0c1;background:white;color:var(--green);padding:10px 14px;border-radius:8px}.search{padding:10px;border:1px solid var(--line);border-radius:8px;width:240px}table{border-collapse:collapse;width:100%;min-width:730px}th,td{text-align:left;padding:13px;border-bottom:1px solid #eef2ef;font-size:13px}th{color:#819588;background:#f9fbf9}.scroll{overflow:auto}.link{background:none;border:0;color:var(--green);padding:5px;font-weight:600}.danger{color:#bd4545}.error{color:#b53434;margin:12px 0;font-size:13px}.notice{margin:15px 0;color:#708577;font-size:13px;line-height:1.8}dialog{border:0;border-radius:14px;padding:25px;width:min(660px,calc(100% - 24px));max-height:90vh;overflow:auto;box-shadow:0 20px 70px #0003}dialog::backdrop{background:#13251ac0}.form{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field label{display:block;font-size:13px;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid #d4e2d8;border-radius:8px;padding:11px}.full{grid-column:1/-1}.foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}@media(max-width:850px){.layout{display:block}aside{display:flex;overflow:auto;padding:8px}.nav{min-width:155px}.cards{grid-template-columns:1fr 1fr}main{padding:16px}}@media(max-width:500px){.form{grid-template-columns:1fr}.full{grid-column:auto}}
+
+.doc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.doc-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.doc-card h3{font-size:15px;margin:0 0 9px;color:#176448}
+.doc-card .doc-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.doc-card input[type=file]{display:none}
+.doc-file{border-top:1px solid #eef2ef;padding:10px 0;display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.doc-file-name{word-break:break-all;font-size:13px;flex:1;min-width:120px}
+.doc-mini{border:1px solid #b8d0c1;background:white;color:#176448;border-radius:6px;padding:6px 9px;font-size:12px}
+.doc-danger{color:#b53434}
+.doc-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.doc-note{font-size:12px;color:#708577;line-height:1.6}
+@media(max-width:1000px){.doc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.doc-grid{grid-template-columns:1fr}}
 </style></head><body>
 <header class="top"><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
 <div class="layout"><aside id="nav"></aside><main>
 <div class="head"><div><h1 id="company">正在读取项目公司...</h1><div class="muted" id="project"></div></div><button class="outline" id="refresh">刷新当前模块</button></div>
 <div class="cards"><div class="card"><span class="muted">SPV公司</span><b id="companyStatus">—</b></div><div class="card"><span class="muted">项目状态</span><b id="projectStatus">—</b></div><div class="card"><span class="muted">装机容量</span><b id="capacity">—</b></div><div class="card"><span class="muted">集团持股</span><b>100%</b></div></div>
 <section class="panel"><div class="head"><div><h2 id="moduleTitle">业务资料</h2><div class="muted" id="moduleDesc"></div></div><div><input class="search" id="search" placeholder="搜索标题、备注"> <button class="btn" id="add">＋ 新增记录</button></div></div><div id="error" class="error"></div><div class="scroll"><table><thead><tr><th>标题 / 事项</th><th>日期</th><th>金额（元）</th><th>状态</th><th>备注 / 详细信息</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="6">正在加载...</td></tr></tbody></table></div></section>
-<div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案目前登记文件元数据与链接，实际上传与审批流程需后续接入独立文件存储和审批引擎。</div>
+<section id="docSection" hidden><div class="doc-top"><h2>项目档案 · 15类文件</h2><button class="outline" id="docReload">刷新文件列表</button></div><p class="doc-note">原格式上传和下载；不转换文件。单个文件不超过20MB。文件存放于Cloudflare R2私有存储。</p><div id="docError" class="error"></div><div id="docGrid" class="doc-grid"></div></section><div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案文件存放在R2私有存储，通过Worker鉴权下载。</div>
 </main></div>
 <dialog id="dialog"><form id="form"><h2 id="dialogTitle">新增资料</h2><p class="muted" id="dialogModule"></p><div class="form"><div class="field full"><label>记录标题 *</label><input name="title" required maxlength="200"></div><div class="field"><label>日期</label><input name="record_date" type="date"></div><div class="field"><label>金额（元，可空）</label><input name="amount" type="number" min="0" step="0.01"></div><div class="field full"><label>状态</label><select name="status"><option value="active">正常 / 进行中</option><option value="pending">待处理</option><option value="completed">已完成</option><option value="archived">已归档</option></select></div><div class="field full"><label>详细说明</label><textarea name="description" rows="4" maxlength="5000"></textarea></div><div class="field full"><label>附件链接 / 参考网址（可空）</label><input name="url" type="url" maxlength="1500" placeholder="https://..."></div><div class="field full" id="folderWrap" hidden><label>项目档案分类</label><select name="folder" id="folder"></select></div></div><p id="formError" class="error"></p><div class="foot"><button type="button" class="outline" id="cancel">取消</button><button type="submit" class="btn" id="save">保存</button></div></form></dialog>
 <script>
@@ -18,17 +32,90 @@ const $=id=>document.getElementById(id);
 const modules=[['overview','经营总览','经营指标、工作事项和管理备注'],['company','公司档案','工商信息补充资料、重要变更'],['equity','股权资本','出资、实缴、股权变更'],['licenses','证照账户','许可证照、银行账户资料'],['initiation','项目立项','备案、审批、立项进展'],['construction','项目建设','EPC、施工进度、验收'],['assets','资产管理','设备台账、资产变动、折旧'],['financing','融资债务','贷款、借款、利息及还款'],['revenue','收入经营','电费、应收款、经营收入'],['cashflow','资金现金流','资金收付及往来'],['contracts','合同管理','合同、履约、付款'],['finance','财务税务','会计、税费及报表'],['insurance','保险风险','保单、续保、风险事项'],['documents','项目档案','15类新能源项目资料'],['approvals','审批操作记录','内部审批事项及管理记录']];
 const folders=['备案证明','并网验收材料','购售电合同','竣工验收材料','能源管理合同（EMC）','荷载报告','EPC施工合同','保险相关材料','环评相关材料','结算单','融资相关材料','项目公司相关材料','用能企业相关材料','项目现场照片','TUV报告'];
 const id=new URLSearchParams(location.search).get('company_id');
-let current='overview',rows=[],editing=null,canEdit=false;
+let current='overview',rows=[],editing=null,canEdit=false,docRows=[];
 async function api(path,method='GET',body){const r=await fetch(API+path,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'请求失败');return d}
 function textCell(t){const td=document.createElement('td');td.textContent=t??'—';return td}
 function btn(label,fn,danger=false){const b=document.createElement('button');b.className='link'+(danger?' danger':'');b.textContent=label;b.onclick=fn;return b}
 function showError(e){$('error').textContent=e.message||String(e)}
 function moduleName(k){return modules.find(x=>x[0]===k)?.[1]||k}
 function draw(){const key=$('search').value.toLowerCase();const tbody=$('rows');tbody.replaceChildren();const items=rows.filter(r=>(r.xuwen_title+' '+JSON.stringify(r.xuwen_details||{})).toLowerCase().includes(key));if(!items.length){const tr=document.createElement('tr'),td=textCell('当前模块暂无资料');td.colSpan=6;tr.append(td);tbody.append(tr);return}for(const r of items){const tr=document.createElement('tr');tr.append(textCell(r.xuwen_title),textCell(r.xuwen_record_date),textCell(r.xuwen_amount==null?'—':Number(r.xuwen_amount).toLocaleString('zh-CN')),textCell(r.xuwen_status),textCell([r.xuwen_details?.folder,r.xuwen_details?.description].filter(Boolean).join(' · ').slice(0,110)));const td=document.createElement('td');td.append(btn('查看',()=>openForm(r,true)));if(canEdit){td.append(btn('编辑',()=>openForm(r,false)),btn('删除',()=>removeRecord(r),true))}tr.append(td);tbody.append(tr)}}
-async function load(){try{$('error').textContent='';const d=await api('/api/spv/records?company_id='+encodeURIComponent(id)+'&module='+current);rows=d.records||[];draw()}catch(e){showError(e)}}
+async function load(){if(current==='documents'){await loadDocs();return}try{$('error').textContent='';const d=await api('/api/spv/records?company_id='+encodeURIComponent(id)+'&module='+current);rows=d.records||[];draw()}catch(e){showError(e)}}
 function openForm(r=null,readonly=false){editing=r?.xuwen_id||null;const f=$('form');f.reset();$('dialogTitle').textContent=(readonly?'查看':r?'编辑':'新增')+' · '+moduleName(current);$('dialogModule').textContent=moduleName(current);$('folderWrap').hidden=current!=='documents';f.elements.title.value=r?.xuwen_title||'';f.elements.record_date.value=r?.xuwen_record_date||'';f.elements.amount.value=r?.xuwen_amount??'';f.elements.status.value=r?.xuwen_status||'active';f.elements.description.value=r?.xuwen_details?.description||'';f.elements.url.value=r?.xuwen_details?.url||'';f.elements.folder.value=r?.xuwen_details?.folder||folders[0];for(const e of f.elements){if(e.name)e.disabled=readonly}$('save').hidden=readonly;$('formError').textContent='';$('dialog').showModal()}
 async function removeRecord(r){if(!confirm('确定删除“'+r.xuwen_title+'”？此操作不可撤销。'))return;try{await api('/api/spv/record/delete','POST',{company_id:id,module:current,id:r.xuwen_id});await load()}catch(e){showError(e)}}
 $('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget;$('save').disabled=true;$('formError').textContent='';try{await api('/api/spv/record/save','POST',{id:editing,company_id:id,module:current,title:f.elements.title.value,record_date:f.elements.record_date.value,amount:f.elements.amount.value,status:f.elements.status.value,details:{description:f.elements.description.value,url:f.elements.url.value,folder:current==='documents'?f.elements.folder.value:null}});$('dialog').close();await load()}catch(err){$('formError').textContent=err.message}finally{$('save').disabled=false}};
 $('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>openForm();$('refresh').onclick=load;$('search').oninput=draw;
-async function init(){if(!id||!/^[0-9a-f-]{36}$/i.test(id)){$('company').textContent='缺少有效公司ID';return}try{const me=await api('/api/me');if(me.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=me.user.xuwen_full_name||'';const list=await api('/api/spv/list');const record=list.records.find(x=>x.company.xuwen_id===id);if(!record)throw new Error('没有该项目公司的访问权限');const c=record.company,p=record.project||{};$('company').textContent=c.xuwen_company_name;$('project').textContent=p.xuwen_project_name||'项目资料未完善';$('companyStatus').textContent=c.xuwen_status==='active'?'正常':c.xuwen_status;$('projectStatus').textContent=p.xuwen_project_status||'—';$('capacity').textContent=p.xuwen_capacity_kw==null?'—':Number(p.xuwen_capacity_kw).toLocaleString()+' kW';canEdit=['superadmin','admin'].includes(me.user.xuwen_role)||me.user.xuwen_role==='manager';$('add').hidden=!canEdit;for(const [key,label,desc] of modules){const b=document.createElement('button');b.className='nav';b.textContent=label;b.onclick=()=>{current=key;$('moduleTitle').textContent=label;$('moduleDesc').textContent=desc;document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');load()};$('nav').append(b)}$('nav').firstElementChild.click();for(const folder of folders){const o=document.createElement('option');o.value=folder;o.textContent=folder;$('folder').append(o)}}catch(e){showError(e);$('company').textContent='无法打开项目公司'}}init();
+
+const docTypes='.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.gif,.heic,.txt,.csv';
+function docSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(2)+' MB'}
+function docMessage(e){$('docError').textContent=e?.message||String(e)}
+async function loadDocs(){
+ $('docError').textContent='';
+ try{const d=await api('/api/spv/documents?company_id='+encodeURIComponent(id));docRows=d.records||[];drawDocs()}
+ catch(e){docMessage(e)}
+}
+function docButton(label,handler,danger=false){
+ const b=document.createElement('button');b.type='button';b.className='doc-mini'+(danger?' doc-danger':'');b.textContent=label;b.onclick=handler;return b
+}
+async function uploadDoc(folder,files,button){
+ if(!files?.length)return;
+ button.disabled=true;
+ try{
+  for(const file of files){
+   if(file.size>20*1024*1024||file.size===0)throw new Error(file.name+'：单个文件必须在0～20MB之间');
+   const url='/api/spv/document/upload?company_id='+encodeURIComponent(id)+'&folder='+encodeURIComponent(folder)+'&filename='+encodeURIComponent(file.name);
+   const res=await fetch(API+url,{method:'POST',credentials:'include',headers:{'Content-Type':'application/octet-stream'},body:file});
+   const d=await res.json();
+   if(res.status===401){location.replace('login.html');return}
+   if(!res.ok||!d.success)throw new Error(file.name+'：'+(d.error||'上传失败'));
+  }
+  await loadDocs();
+ }catch(e){docMessage(e)}finally{button.disabled=false}
+}
+async function downloadDoc(file){
+ try{
+  const url='/api/spv/document/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(file.xuwen_id);
+  const res=await fetch(API+url,{credentials:'include'});
+  if(res.status===401){location.replace('login.html');return}
+  if(!res.ok){let msg='下载失败';try{msg=(await res.json()).error||msg}catch{}throw new Error(msg)}
+  const blob=await res.blob(),objectURL=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=objectURL;a.download=file.xuwen_file_name;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(objectURL),60000);
+ }catch(e){docMessage(e)}
+}
+async function deleteDoc(file){
+ if(!confirm('确定永久删除“'+file.xuwen_file_name+'”？R2中的文件也会删除，无法恢复。'))return;
+ try{await api('/api/spv/document/delete','POST',{company_id:id,id:file.xuwen_id});await loadDocs()}
+ catch(e){docMessage(e)}
+}
+function drawDocs(){
+ const grid=$('docGrid');grid.replaceChildren();
+ for(const folder of folders){
+  const card=document.createElement('article');card.className='doc-card';
+  const title=document.createElement('h3');const items=docRows.filter(x=>x.xuwen_folder===folder);
+  title.textContent=folder+'（'+items.length+'）';card.append(title);
+  const actions=document.createElement('div');actions.className='doc-actions';
+  if(canEdit){
+   const picker=document.createElement('input');picker.type='file';picker.multiple=true;picker.accept=docTypes;
+   const up=docButton('＋ 上传文件',()=>picker.click());
+   picker.onchange=async()=>{await uploadDoc(folder,[...picker.files],up);picker.value=''};
+   actions.append(up,picker)
+  }
+  card.append(actions);
+  if(!items.length){const empty=document.createElement('div');empty.className='muted';empty.textContent='暂无文件';card.append(empty)}
+  for(const file of items){
+   const line=document.createElement('div');line.className='doc-file';
+   const info=document.createElement('div');info.className='doc-file-name';
+   const name=document.createElement('div');name.textContent=file.xuwen_file_name;
+   const sub=document.createElement('div');sub.className='muted';sub.textContent=docSize(file.xuwen_size_bytes)+' · '+new Date(file.xuwen_created_at).toLocaleDateString('zh-CN');
+   info.append(name,sub);line.append(info);
+   line.append(docButton('下载',()=>downloadDoc(file)));
+   if(canEdit)line.append(docButton('删除',()=>deleteDoc(file),true));
+   card.append(line)
+  }
+  grid.append(card)
+ }
+}
+$('docReload').onclick=loadDocs;
+
+async function init(){if(!id||!/^[0-9a-f-]{36}$/i.test(id)){$('company').textContent='缺少有效公司ID';return}try{const me=await api('/api/me');if(me.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=me.user.xuwen_full_name||'';const list=await api('/api/spv/list');const record=list.records.find(x=>x.company.xuwen_id===id);if(!record)throw new Error('没有该项目公司的访问权限');const c=record.company,p=record.project||{};$('company').textContent=c.xuwen_company_name;$('project').textContent=p.xuwen_project_name||'项目资料未完善';$('companyStatus').textContent=c.xuwen_status==='active'?'正常':c.xuwen_status;$('projectStatus').textContent=p.xuwen_project_status||'—';$('capacity').textContent=p.xuwen_capacity_kw==null?'—':Number(p.xuwen_capacity_kw).toLocaleString()+' kW';canEdit=['superadmin','admin'].includes(me.user.xuwen_role)||me.user.xuwen_role==='manager';$('add').hidden=!canEdit;for(const [key,label,desc] of modules){const b=document.createElement('button');b.className='nav';b.textContent=label;b.onclick=()=>{current=key;$('moduleTitle').textContent=label;$('moduleDesc').textContent=desc;document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('docSection').hidden=key!=='documents';document.querySelector('.panel').hidden=key==='documents';$('add').hidden=key==='documents'||!canEdit;load()};$('nav').append(b)}$('nav').firstElementChild.click();for(const folder of folders){const o=document.createElement('option');o.value=folder;o.textContent=folder;$('folder').append(o)}}catch(e){showError(e);$('company').textContent='无法打开项目公司'}}init();
 </script></body></html>
