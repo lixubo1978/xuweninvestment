@@ -24,7 +24,7 @@
 <div class="head"><div><h1 id="company">正在读取项目公司...</h1><div class="muted" id="project"></div></div><button class="outline" id="refresh">刷新当前模块</button></div>
 <div class="cards"><div class="card"><span class="muted">SPV公司</span><b id="companyStatus">—</b></div><div class="card"><span class="muted">项目状态</span><b id="projectStatus">—</b></div><div class="card"><span class="muted">装机容量</span><b id="capacity">—</b></div><div class="card"><span class="muted">集团持股</span><b>100%</b></div></div>
 <section class="panel"><div class="head"><div><h2 id="moduleTitle">业务资料</h2><div class="muted" id="moduleDesc"></div></div><div><input class="search" id="search" placeholder="搜索标题、备注"> <button class="btn" id="add">＋ 新增记录</button></div></div><div id="error" class="error"></div><div class="scroll"><table><thead><tr><th>标题 / 事项</th><th>日期</th><th>金额（元）</th><th>状态</th><th>备注 / 详细信息</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="6">正在加载...</td></tr></tbody></table></div></section>
-<section id="docSection" hidden><div class="head"><h2>项目档案 · 文件夹管理器</h2><button class="outline" id="docReload">刷新</button></div><div class="fm-toolbar"><button class="btn" id="fmNew">＋ 新建文件夹</button><button class="outline" id="fmUpload">⬆ 上传文件</button><button class="outline" id="fmPaste">粘贴剪贴板文件</button><input class="fm-filepicker" id="fmPicker" type="file" multiple></div><div id="fmCrumb" class="fm-crumb"></div><div id="fmDrop" class="fm-drop">将电脑中的文件拖放到这里，或使用上方按钮上传（单文件≤20MB）</div><div id="docError" class="error"></div><div id="docGrid" class="fm-grid"></div></section><div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案文件存放在R2私有存储，通过Worker鉴权下载。</div>
+<section id="docSection" hidden><div class="head"><h2>项目档案 · 文件夹管理器</h2><button class="outline" id="docReload">刷新</button></div><div class="fm-toolbar"><button class="btn" id="fmNew">＋ 新建文件夹</button><button class="outline" id="fmUpload">⬆ 上传文件</button><button class="outline" id="fmUploadFolder">📁 上传文件夹</button><button class="outline" id="fmPaste">粘贴剪贴板文件</button><input class="fm-filepicker" id="fmPicker" type="file" multiple><input class="fm-filepicker" id="fmFolderPicker" type="file" webkitdirectory directory multiple></div><div id="fmCrumb" class="fm-crumb"></div><div id="fmDrop" class="fm-drop">将电脑中的文件拖放到这里，或使用上方按钮上传（单文件≤50MB，支持整文件夹与多级目录）</div><div id="fmProgress" class="muted" role="status" aria-live="polite"></div><div id="docError" class="error"></div><div id="docGrid" class="fm-grid"></div></section><div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案文件存放在R2私有存储，通过Worker鉴权下载。</div>
 </main></div>
 <dialog id="dialog"><form id="form"><h2 id="dialogTitle">新增资料</h2><p class="muted" id="dialogModule"></p><div class="form"><div class="field full"><label>记录标题 *</label><input name="title" required maxlength="200"></div><div class="field"><label>日期</label><input name="record_date" type="date"></div><div class="field"><label>金额（元，可空）</label><input name="amount" type="number" min="0" step="0.01"></div><div class="field full"><label>状态</label><select name="status"><option value="active">正常 / 进行中</option><option value="pending">待处理</option><option value="completed">已完成</option><option value="archived">已归档</option></select></div><div class="field full"><label>详细说明</label><textarea name="description" rows="4" maxlength="5000"></textarea></div><div class="field full"><label>附件链接 / 参考网址（可空）</label><input name="url" type="url" maxlength="1500" placeholder="https://..."></div><div class="field full" id="folderWrap" hidden><label>项目档案分类</label><select name="folder" id="folder"></select></div></div><p id="formError" class="error"></p><div class="foot"><button type="button" class="outline" id="cancel">取消</button><button type="submit" class="btn" id="save">保存</button></div></form></dialog>
 <script>
@@ -59,7 +59,78 @@ async function fmRenameFolder(f){const name=prompt('修改文件夹名称',f.xuw
 function fmChooseDestination(){const options=['0. 根目录',...fmFolders.map((x,i)=>(i+1)+'. '+x.xuwen_name+'（'+x.xuwen_id.slice(0,8)+'）')];const value=prompt('选择目标文件夹编号：\n'+options.join('\n'),'0');if(value===null)return undefined;const n=Number(value);if(!Number.isInteger(n)||n<0||n>fmFolders.length)throw new Error('文件夹编号不正确');return n===0?null:fmFolders[n-1].xuwen_id}
 async function fmMoveFolder(f){try{const dest=fmChooseDestination();if(dest===undefined)return;await fmAction('/api/spv/fs/folder',{id:f.xuwen_id,parent_id:dest,name:f.xuwen_name})}catch(e){docMessage(e)}}
 async function fmDeleteFolder(f){if(confirm('删除空文件夹“'+f.xuwen_name+'”？'))await fmAction('/api/spv/fs/folder/delete',{id:f.xuwen_id})}
-async function fmUploadFiles(files){for(const file of files){if(!file.size||file.size>20*1024*1024){docMessage(file.name+'：文件须在0～20MB之间');continue}try{const u='/api/spv/fs/file/upload?company_id='+encodeURIComponent(id)+'&folder_id='+encodeURIComponent(fmHere||'')+'&filename='+encodeURIComponent(file.name);const r=await fetch(API+u,{method:'POST',credentials:'include',headers:{'Content-Type':'application/octet-stream'},body:file});if(r.status===401){location.replace('login.html');return}const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'上传失败')}catch(e){docMessage(file.name+'：'+e.message)}}await loadDocs()}
+const FM_LIMIT=50*1024*1024,FM_PART=6*1024*1024;
+let fmBusy=false;
+function fmStatus(s){$('fmProgress').textContent=s}
+async function fmPostBinary(path,blob){
+ const r=await fetch(API+path,{method:'POST',credentials:'include',headers:{'Content-Type':'application/octet-stream'},body:blob});
+ if(r.status===401){location.replace('login.html');throw new Error('登录已失效')}
+ const d=await r.json().catch(()=>({}));if(!r.ok||!d.success)throw new Error(d.error||'分片上传失败');return d;
+}
+async function fmUploadOne(file,folderId,progress){
+ if(!file.size||file.size>FM_LIMIT)throw new Error('文件须在1字节至50MB之间');
+ const start=await api('/api/spv/fs/multipart/start','POST',{company_id:id,folder_id:folderId,name:file.name,size:file.size});
+ const parts=[],count=Math.ceil(file.size/FM_PART);
+ try{
+   for(let i=0;i<count;i++){
+     const chunk=file.slice(i*FM_PART,Math.min(file.size,(i+1)*FM_PART));
+     let result;for(let attempt=0;attempt<3;attempt++){
+       try{result=await fmPostBinary('/api/spv/fs/multipart/part?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(start.id)+'&part='+(i+1),chunk);break}
+       catch(e){if(attempt===2)throw e;await new Promise(r=>setTimeout(r,600*(attempt+1)))}
+     }
+     parts.push({part_number:result.part_number,etag:result.etag});
+     progress(i+1,count);
+   }
+   await api('/api/spv/fs/multipart/complete','POST',{company_id:id,id:start.id,parts});
+ }catch(e){await api('/api/spv/fs/multipart/abort','POST',{company_id:id,id:start.id}).catch(()=>{});throw e}
+}
+async function fmCreateImportFolder(parentId,name){
+ const r=await api('/api/spv/fs/folder','POST',{company_id:id,parent_id:parentId,name});return r.folder.xuwen_id;
+}
+async function fmImport(entries){
+ if(fmBusy)return;fmBusy=true;$('docError').textContent='';
+ let ok=0,failed=0,folderCount=0;const errors=[];
+ try{
+   const folders=entries.filter(x=>x.type==='dir').sort((a,b)=>a.path.split('/').length-b.path.split('/').length);
+   const files=entries.filter(x=>x.type==='file');
+   const map=new Map([['',fmHere]]);
+   for(const entry of folders){
+     const segments=entry.path.split('/');const parent=segments.slice(0,-1).join('/');
+     if(!map.has(parent)){errors.push('父目录不存在：'+entry.path);failed++;continue}
+     try{const fid=await fmCreateImportFolder(map.get(parent),segments.at(-1));map.set(entry.path,fid);folderCount++;fmStatus('正在创建文件夹 '+folderCount+'/'+folders.length+'：'+entry.path)}
+     catch(e){ // 重复目录：仅复用当前公司同一父目录下同名文件夹
+       try{const d=await api('/api/spv/fs/list?company_id='+encodeURIComponent(id));const match=(d.folders||[]).find(x=>x.xuwen_parent_id===map.get(parent)&&x.xuwen_name===segments.at(-1));if(!match)throw e;map.set(entry.path,match.xuwen_id)}catch{failed++;errors.push(entry.path+'：'+e.message)}
+     }
+   }
+   for(let i=0;i<files.length;i++){
+     const entry=files[i],parent=entry.path.split('/').slice(0,-1).join('/');
+     if(!map.has(parent)){failed++;errors.push(entry.path+'：上级文件夹未创建');continue}
+     try{await fmUploadOne(entry.file,map.get(parent),(part,total)=>fmStatus('上传 '+(i+1)+'/'+files.length+'：'+entry.path+' · 分片 '+part+'/'+total));ok++}
+     catch(e){failed++;errors.push(entry.path+'：'+e.message)}
+   }
+   fmStatus('导入完成：新建文件夹 '+folderCount+' 个，成功文件 '+ok+' 个，失败 '+failed+' 个。');
+   if(errors.length)$('docError').textContent=errors.slice(0,15).join('；')+(errors.length>15?'；其余'+(errors.length-15)+'项未显示':'');
+ }finally{fmBusy=false;await loadDocs();if(errors.length)$('docError').textContent=errors.slice(0,15).join('；')+(errors.length>15?'；其余'+(errors.length-15)+'项未显示':'');}
+}
+function fmEntriesFromPicker(files){
+ const dirs=new Set(),entries=[];
+ for(const file of files){const path=(file.webkitRelativePath||file.name).split('/').filter(Boolean).join('/');if(!path)continue;const parts=path.split('/');for(let i=1;i<parts.length;i++)dirs.add(parts.slice(0,i).join('/'));entries.push({type:'file',path,file})}
+ return [...[...dirs].map(path=>({type:'dir',path})),...entries];
+}
+async function fmEntriesFromDrop(dt){
+ const items=[...(dt.items||[])],roots=items.map(x=>x.webkitGetAsEntry?.()).filter(Boolean);
+ if(!roots.length)return fmEntriesFromPicker([...dt.files]);
+ const entries=[];
+ async function walk(entry,path){
+   const full=path?path+'/'+entry.name:entry.name;
+   if(entry.isFile){const file=await new Promise((res,rej)=>entry.file(res,rej));entries.push({type:'file',path:full,file});return}
+   if(entry.isDirectory){entries.push({type:'dir',path:full});const reader=entry.createReader();while(true){const batch=await new Promise((res,rej)=>reader.readEntries(res,rej));if(!batch.length)break;for(const child of batch)await walk(child,full)}}
+ }
+ for(const root of roots)await walk(root,'');
+ return entries;
+}
+async function fmUploadFiles(files){await fmImport(fmEntriesFromPicker(files))}
+
 async function fmDownload(f){try{const u='/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id);const r=await fetch(API+u,{credentials:'include'});if(r.status===401){location.replace('login.html');return}if(!r.ok){const d=await r.json();throw new Error(d.error||'下载失败')}const b=await r.blob(),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=f.xuwen_file_name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){docMessage(e)}}
 async function fmRenameFile(f){const name=prompt('新文件名',f.xuwen_file_name);if(name&&name!==f.xuwen_file_name)await fmAction('/api/spv/fs/file/edit',{id:f.xuwen_id,name,folder_id:f.xuwen_folder_id})}
 async function fmMoveFile(f,copy=false){try{const dest=fmChooseDestination();if(dest===undefined)return;await fmAction(copy?'/api/spv/fs/file/copy':'/api/spv/fs/file/edit',{id:f.xuwen_id,folder_id:dest})}catch(e){docMessage(e)}}
@@ -70,11 +141,11 @@ function drawDocs(){const grid=$('docGrid'),crumb=$('fmCrumb');grid.replaceChild
  for(const f of child){const c=card('📁',f.xuwen_name,'文件夹');c.box.ondblclick=()=>fmOpen(f.xuwen_id);c.actions.append(fmBtn('打开',()=>fmOpen(f.xuwen_id)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFolder(f)),fmBtn('移动',()=>fmMoveFolder(f)),fmBtn('删除',()=>fmDeleteFolder(f)));}
  for(const f of files){const c=card('📄',f.xuwen_file_name,docSize(f.xuwen_size_bytes));c.box.ondblclick=()=>fmDownload(f);c.actions.append(fmBtn('下载',()=>fmDownload(f)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFile(f)),fmBtn('移动',()=>fmMoveFile(f)),fmBtn('复制',()=>fmMoveFile(f,true)),fmBtn('删除',()=>fmDeleteFile(f)));}
  if(!child.length&&!files.length){const x=document.createElement('div');x.className='muted';x.textContent='当前文件夹为空，可直接拖入文件';grid.append(x)}
- $('fmNew').hidden=!canEdit;$('fmUpload').hidden=!canEdit;$('fmPaste').hidden=!canEdit;$('fmDrop').hidden=!canEdit;
+ $('fmNew').hidden=!canEdit;$('fmUploadFolder').hidden=!canEdit;$('fmUpload').hidden=!canEdit;$('fmPaste').hidden=!canEdit;$('fmDrop').hidden=!canEdit;
 }
-$('docReload').onclick=loadDocs;$('fmNew').onclick=fmNew;$('fmUpload').onclick=()=>$('fmPicker').click();$('fmPicker').onchange=async e=>{await fmUploadFiles([...e.target.files]);e.target.value=''};
+$('docReload').onclick=loadDocs;$('fmNew').onclick=fmNew;$('fmUpload').onclick=()=>$('fmPicker').click();$('fmUploadFolder').onclick=()=>$('fmFolderPicker').click();$('fmFolderPicker').onchange=async e=>{await fmImport(fmEntriesFromPicker([...e.target.files]));e.target.value=''};$('fmPicker').onchange=async e=>{await fmUploadFiles([...e.target.files]);e.target.value=''};
 $('fmPaste').onclick=async()=>{try{const items=await navigator.clipboard.read();const files=[];for(const item of items)for(const type of item.types){if(type.startsWith('image/')||type==='application/pdf'){const blob=await item.getType(type);files.push(new File([blob],'粘贴文件_'+Date.now()+'.'+(type.split('/')[1]==='jpeg'?'jpg':type.split('/')[1]),{type}))}}if(!files.length)throw new Error('剪贴板没有浏览器允许读取的文件；可使用拖放或上传按钮');await fmUploadFiles(files)}catch(e){docMessage(e)}};
-$('fmDrop').ondragover=e=>{e.preventDefault();e.currentTarget.classList.add('drag')};$('fmDrop').ondragleave=e=>e.currentTarget.classList.remove('drag');$('fmDrop').ondrop=async e=>{e.preventDefault();e.currentTarget.classList.remove('drag');if(canEdit)await fmUploadFiles([...e.dataTransfer.files])};
+$('fmDrop').ondragover=e=>{e.preventDefault();e.currentTarget.classList.add('drag')};$('fmDrop').ondragleave=e=>e.currentTarget.classList.remove('drag');$('fmDrop').ondrop=async e=>{e.preventDefault();e.currentTarget.classList.remove('drag');if(!canEdit)return;try{const entries=await fmEntriesFromDrop(e.dataTransfer);await fmImport(entries)}catch(err){docMessage(err)}};
 
 async function init(){if(!id||!/^[0-9a-f-]{36}$/i.test(id)){$('company').textContent='缺少有效公司ID';return}try{const me=await api('/api/me');if(me.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=me.user.xuwen_full_name||'';const list=await api('/api/spv/list');const record=list.records.find(x=>x.company.xuwen_id===id);if(!record)throw new Error('没有该项目公司的访问权限');const c=record.company,p=record.project||{};$('company').textContent=c.xuwen_company_name;$('project').textContent=p.xuwen_project_name||'项目资料未完善';$('companyStatus').textContent=c.xuwen_status==='active'?'正常':c.xuwen_status;$('projectStatus').textContent=p.xuwen_project_status||'—';$('capacity').textContent=p.xuwen_capacity_kw==null?'—':Number(p.xuwen_capacity_kw).toLocaleString()+' kW';canEdit=['superadmin','admin'].includes(me.user.xuwen_role)||me.user.xuwen_role==='manager';$('add').hidden=!canEdit;for(const [key,label,desc] of modules){const b=document.createElement('button');b.className='nav';b.textContent=label;b.onclick=()=>{current=key;$('moduleTitle').textContent=label;$('moduleDesc').textContent=desc;document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('docSection').hidden=key!=='documents';document.querySelector('.panel').hidden=key==='documents';$('add').hidden=key==='documents'||!canEdit;load()};$('nav').append(b)}$('nav').firstElementChild.click();for(const folder of folders){const o=document.createElement('option');o.value=folder;o.textContent=folder;$('folder').append(o)}}catch(e){showError(e);$('company').textContent='无法打开项目公司'}}init();
 </script></body></html>
