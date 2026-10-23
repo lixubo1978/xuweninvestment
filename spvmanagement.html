@@ -16,20 +16,22 @@
 .doc-note{font-size:12px;color:#708577;line-height:1.6}
 @media(max-width:1000px){.doc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.doc-grid{grid-template-columns:1fr}}
+
+.fm-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}.fm-crumb{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.fm-crumb button{border:0;background:transparent;color:#176448;cursor:pointer}.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px}.fm-item{background:#fff;border:1px solid #dae7dd;border-radius:12px;padding:12px;min-width:0}.fm-item .fm-icon{font-size:29px}.fm-name{overflow-wrap:anywhere;font-weight:600;font-size:13px;margin:7px 0}.fm-actions{display:flex;gap:5px;flex-wrap:wrap}.fm-actions button{font-size:12px;border:1px solid #c8dace;border-radius:6px;background:#fff;color:#176448;padding:4px 7px}.fm-drop{border:2px dashed #c0d8c8;border-radius:12px;padding:22px;text-align:center;margin:12px 0;background:#f9fcfa}.fm-drop.drag{background:#e5f5eb;border-color:#176448}.fm-filepicker{display:none}@media(max-width:650px){.fm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style></head><body>
 <header class="top"><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
 <div class="layout"><aside id="nav"></aside><main>
 <div class="head"><div><h1 id="company">正在读取项目公司...</h1><div class="muted" id="project"></div></div><button class="outline" id="refresh">刷新当前模块</button></div>
 <div class="cards"><div class="card"><span class="muted">SPV公司</span><b id="companyStatus">—</b></div><div class="card"><span class="muted">项目状态</span><b id="projectStatus">—</b></div><div class="card"><span class="muted">装机容量</span><b id="capacity">—</b></div><div class="card"><span class="muted">集团持股</span><b>100%</b></div></div>
 <section class="panel"><div class="head"><div><h2 id="moduleTitle">业务资料</h2><div class="muted" id="moduleDesc"></div></div><div><input class="search" id="search" placeholder="搜索标题、备注"> <button class="btn" id="add">＋ 新增记录</button></div></div><div id="error" class="error"></div><div class="scroll"><table><thead><tr><th>标题 / 事项</th><th>日期</th><th>金额（元）</th><th>状态</th><th>备注 / 详细信息</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="6">正在加载...</td></tr></tbody></table></div></section>
-<section id="docSection" hidden><div class="doc-top"><h2>项目档案 · 15类文件</h2><button class="outline" id="docReload">刷新文件列表</button></div><p class="doc-note">原格式上传和下载；不转换文件。单个文件不超过20MB。文件存放于Cloudflare R2私有存储。</p><div id="docError" class="error"></div><div id="docGrid" class="doc-grid"></div></section><div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案文件存放在R2私有存储，通过Worker鉴权下载。</div>
+<section id="docSection" hidden><div class="head"><h2>项目档案 · 文件夹管理器</h2><button class="outline" id="docReload">刷新</button></div><div class="fm-toolbar"><button class="btn" id="fmNew">＋ 新建文件夹</button><button class="outline" id="fmUpload">⬆ 上传文件</button><button class="outline" id="fmPaste">粘贴剪贴板文件</button><input class="fm-filepicker" id="fmPicker" type="file" multiple></div><div id="fmCrumb" class="fm-crumb"></div><div id="fmDrop" class="fm-drop">将电脑中的文件拖放到这里，或使用上方按钮上传（单文件≤20MB）</div><div id="docError" class="error"></div><div id="docGrid" class="fm-grid"></div></section><div class="notice">本页面15个模块均支持资料记录新增、编辑、查看、删除；公司与项目基础信息由集团管理中心维护。金额记录不自动等同于会计资产、利润或现金流。项目档案文件存放在R2私有存储，通过Worker鉴权下载。</div>
 </main></div>
 <dialog id="dialog"><form id="form"><h2 id="dialogTitle">新增资料</h2><p class="muted" id="dialogModule"></p><div class="form"><div class="field full"><label>记录标题 *</label><input name="title" required maxlength="200"></div><div class="field"><label>日期</label><input name="record_date" type="date"></div><div class="field"><label>金额（元，可空）</label><input name="amount" type="number" min="0" step="0.01"></div><div class="field full"><label>状态</label><select name="status"><option value="active">正常 / 进行中</option><option value="pending">待处理</option><option value="completed">已完成</option><option value="archived">已归档</option></select></div><div class="field full"><label>详细说明</label><textarea name="description" rows="4" maxlength="5000"></textarea></div><div class="field full"><label>附件链接 / 参考网址（可空）</label><input name="url" type="url" maxlength="1500" placeholder="https://..."></div><div class="field full" id="folderWrap" hidden><label>项目档案分类</label><select name="folder" id="folder"></select></div></div><p id="formError" class="error"></p><div class="foot"><button type="button" class="outline" id="cancel">取消</button><button type="submit" class="btn" id="save">保存</button></div></form></dialog>
 <script>
 'use strict';
 const API='https://api-xuwen.shuofengtechnology.com';
 const $=id=>document.getElementById(id);
-const modules=[['overview','经营总览','经营指标、工作事项和管理备注'],['company','公司档案','工商信息补充资料、重要变更'],['equity','股权资本','出资、实缴、股权变更'],['licenses','证照账户','许可证照、银行账户资料'],['initiation','项目立项','备案、审批、立项进展'],['construction','项目建设','EPC、施工进度、验收'],['assets','资产管理','设备台账、资产变动、折旧'],['financing','融资债务','贷款、借款、利息及还款'],['revenue','收入经营','电费、应收款、经营收入'],['cashflow','资金现金流','资金收付及往来'],['contracts','合同管理','合同、履约、付款'],['finance','财务税务','会计、税费及报表'],['insurance','保险风险','保单、续保、风险事项'],['documents','项目档案','15类新能源项目资料'],['approvals','审批操作记录','内部审批事项及管理记录']];
+const modules=[['overview','经营总览','经营指标、工作事项和管理备注'],['company','公司档案','工商信息补充资料、重要变更'],['equity','股权资本','出资、实缴、股权变更'],['licenses','证照账户','许可证照、银行账户资料'],['initiation','项目立项','备案、审批、立项进展'],['construction','项目建设','EPC、施工进度、验收'],['assets','资产管理','设备台账、资产变动、折旧'],['financing','融资债务','贷款、借款、利息及还款'],['revenue','收入经营','电费、应收款、经营收入'],['cashflow','资金现金流','资金收付及往来'],['contracts','合同管理','合同、履约、付款'],['finance','财务税务','会计、税费及报表'],['insurance','保险风险','保单、续保、风险事项'],['documents','项目档案','多级文件夹及原格式文件管理'],['approvals','审批操作记录','内部审批事项及管理记录']];
 const folders=['备案证明','并网验收材料','购售电合同','竣工验收材料','能源管理合同（EMC）','荷载报告','EPC施工合同','保险相关材料','环评相关材料','结算单','融资相关材料','项目公司相关材料','用能企业相关材料','项目现场照片','TUV报告'];
 const id=new URLSearchParams(location.search).get('company_id');
 let current='overview',rows=[],editing=null,canEdit=false,docRows=[];
@@ -45,77 +47,34 @@ async function removeRecord(r){if(!confirm('确定删除“'+r.xuwen_title+'”�
 $('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget;$('save').disabled=true;$('formError').textContent='';try{await api('/api/spv/record/save','POST',{id:editing,company_id:id,module:current,title:f.elements.title.value,record_date:f.elements.record_date.value,amount:f.elements.amount.value,status:f.elements.status.value,details:{description:f.elements.description.value,url:f.elements.url.value,folder:current==='documents'?f.elements.folder.value:null}});$('dialog').close();await load()}catch(err){$('formError').textContent=err.message}finally{$('save').disabled=false}};
 $('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>openForm();$('refresh').onclick=load;$('search').oninput=draw;
 
-const docTypes='.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.gif,.heic,.txt,.csv';
+let fmFolders=[],fmFiles=[],fmHere=null;
 function docSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(2)+' MB'}
 function docMessage(e){$('docError').textContent=e?.message||String(e)}
-async function loadDocs(){
- $('docError').textContent='';
- try{const d=await api('/api/spv/documents?company_id='+encodeURIComponent(id));docRows=d.records||[];drawDocs()}
- catch(e){docMessage(e)}
+async function loadDocs(){try{$('docError').textContent='';const d=await api('/api/spv/fs/list?company_id='+encodeURIComponent(id));fmFolders=d.folders||[];fmFiles=d.files||[];if(fmHere&&!fmFolders.some(f=>f.xuwen_id===fmHere))fmHere=null;drawDocs()}catch(e){docMessage(e)}}
+function fmBtn(label,fn){const b=document.createElement('button');b.textContent=label;b.onclick=fn;return b}
+async function fmAction(path,body){try{await api(path,'POST',{company_id:id,...body});await loadDocs()}catch(e){docMessage(e)}}
+function fmOpen(fid){fmHere=fid;drawDocs()}
+async function fmNew(){const name=prompt('请输入新文件夹名称');if(!name)return;await fmAction('/api/spv/fs/folder',{parent_id:fmHere,name})}
+async function fmRenameFolder(f){const name=prompt('修改文件夹名称',f.xuwen_name);if(name&&name!==f.xuwen_name)await fmAction('/api/spv/fs/folder',{id:f.xuwen_id,parent_id:f.xuwen_parent_id,name})}
+function fmChooseDestination(){const options=['0. 根目录',...fmFolders.map((x,i)=>(i+1)+'. '+x.xuwen_name+'（'+x.xuwen_id.slice(0,8)+'）')];const value=prompt('选择目标文件夹编号：\n'+options.join('\n'),'0');if(value===null)return undefined;const n=Number(value);if(!Number.isInteger(n)||n<0||n>fmFolders.length)throw new Error('文件夹编号不正确');return n===0?null:fmFolders[n-1].xuwen_id}
+async function fmMoveFolder(f){try{const dest=fmChooseDestination();if(dest===undefined)return;await fmAction('/api/spv/fs/folder',{id:f.xuwen_id,parent_id:dest,name:f.xuwen_name})}catch(e){docMessage(e)}}
+async function fmDeleteFolder(f){if(confirm('删除空文件夹“'+f.xuwen_name+'”？'))await fmAction('/api/spv/fs/folder/delete',{id:f.xuwen_id})}
+async function fmUploadFiles(files){for(const file of files){if(!file.size||file.size>20*1024*1024){docMessage(file.name+'：文件须在0～20MB之间');continue}try{const u='/api/spv/fs/file/upload?company_id='+encodeURIComponent(id)+'&folder_id='+encodeURIComponent(fmHere||'')+'&filename='+encodeURIComponent(file.name);const r=await fetch(API+u,{method:'POST',credentials:'include',headers:{'Content-Type':'application/octet-stream'},body:file});if(r.status===401){location.replace('login.html');return}const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'上传失败')}catch(e){docMessage(file.name+'：'+e.message)}}await loadDocs()}
+async function fmDownload(f){try{const u='/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id);const r=await fetch(API+u,{credentials:'include'});if(r.status===401){location.replace('login.html');return}if(!r.ok){const d=await r.json();throw new Error(d.error||'下载失败')}const b=await r.blob(),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=f.xuwen_file_name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){docMessage(e)}}
+async function fmRenameFile(f){const name=prompt('新文件名',f.xuwen_file_name);if(name&&name!==f.xuwen_file_name)await fmAction('/api/spv/fs/file/edit',{id:f.xuwen_id,name,folder_id:f.xuwen_folder_id})}
+async function fmMoveFile(f,copy=false){try{const dest=fmChooseDestination();if(dest===undefined)return;await fmAction(copy?'/api/spv/fs/file/copy':'/api/spv/fs/file/edit',{id:f.xuwen_id,folder_id:dest})}catch(e){docMessage(e)}}
+async function fmDeleteFile(f){if(confirm('永久删除文件“'+f.xuwen_file_name+'”？不可恢复。'))await fmAction('/api/spv/fs/file/delete',{id:f.xuwen_id})}
+function drawDocs(){const grid=$('docGrid'),crumb=$('fmCrumb');grid.replaceChildren();crumb.replaceChildren();const path=[],seen=new Set();let cur=fmHere;while(cur&&!seen.has(cur)){seen.add(cur);const f=fmFolders.find(x=>x.xuwen_id===cur);if(!f)break;path.unshift(f);cur=f.xuwen_parent_id}crumb.append(fmBtn('🏠 根目录',()=>fmOpen(null)));for(const f of path)crumb.append(document.createTextNode(' / '),fmBtn(f.xuwen_name,()=>fmOpen(f.xuwen_id)));
+ const child=fmFolders.filter(x=>x.xuwen_parent_id===fmHere),files=fmFiles.filter(x=>x.xuwen_folder_id===fmHere);
+ function card(icon,name,meta){const box=document.createElement('div');box.className='fm-item';const symbol=document.createElement('div');symbol.className='fm-icon';symbol.textContent=icon;const title=document.createElement('div');title.className='fm-name';title.textContent=name;const sub=document.createElement('div');sub.className='muted';sub.textContent=meta;const actions=document.createElement('div');actions.className='fm-actions';box.append(symbol,title,sub,actions);grid.append(box);return {box,title,actions}}
+ for(const f of child){const c=card('📁',f.xuwen_name,'文件夹');c.box.ondblclick=()=>fmOpen(f.xuwen_id);c.actions.append(fmBtn('打开',()=>fmOpen(f.xuwen_id)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFolder(f)),fmBtn('移动',()=>fmMoveFolder(f)),fmBtn('删除',()=>fmDeleteFolder(f)));}
+ for(const f of files){const c=card('📄',f.xuwen_file_name,docSize(f.xuwen_size_bytes));c.box.ondblclick=()=>fmDownload(f);c.actions.append(fmBtn('下载',()=>fmDownload(f)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFile(f)),fmBtn('移动',()=>fmMoveFile(f)),fmBtn('复制',()=>fmMoveFile(f,true)),fmBtn('删除',()=>fmDeleteFile(f)));}
+ if(!child.length&&!files.length){const x=document.createElement('div');x.className='muted';x.textContent='当前文件夹为空，可直接拖入文件';grid.append(x)}
+ $('fmNew').hidden=!canEdit;$('fmUpload').hidden=!canEdit;$('fmPaste').hidden=!canEdit;$('fmDrop').hidden=!canEdit;
 }
-function docButton(label,handler,danger=false){
- const b=document.createElement('button');b.type='button';b.className='doc-mini'+(danger?' doc-danger':'');b.textContent=label;b.onclick=handler;return b
-}
-async function uploadDoc(folder,files,button){
- if(!files?.length)return;
- button.disabled=true;
- try{
-  for(const file of files){
-   if(file.size>20*1024*1024||file.size===0)throw new Error(file.name+'：单个文件必须在0～20MB之间');
-   const url='/api/spv/document/upload?company_id='+encodeURIComponent(id)+'&folder='+encodeURIComponent(folder)+'&filename='+encodeURIComponent(file.name);
-   const res=await fetch(API+url,{method:'POST',credentials:'include',headers:{'Content-Type':'application/octet-stream'},body:file});
-   const d=await res.json();
-   if(res.status===401){location.replace('login.html');return}
-   if(!res.ok||!d.success)throw new Error(file.name+'：'+(d.error||'上传失败'));
-  }
-  await loadDocs();
- }catch(e){docMessage(e)}finally{button.disabled=false}
-}
-async function downloadDoc(file){
- try{
-  const url='/api/spv/document/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(file.xuwen_id);
-  const res=await fetch(API+url,{credentials:'include'});
-  if(res.status===401){location.replace('login.html');return}
-  if(!res.ok){let msg='下载失败';try{msg=(await res.json()).error||msg}catch{}throw new Error(msg)}
-  const blob=await res.blob(),objectURL=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=objectURL;a.download=file.xuwen_file_name;document.body.append(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(objectURL),60000);
- }catch(e){docMessage(e)}
-}
-async function deleteDoc(file){
- if(!confirm('确定永久删除“'+file.xuwen_file_name+'”？R2中的文件也会删除，无法恢复。'))return;
- try{await api('/api/spv/document/delete','POST',{company_id:id,id:file.xuwen_id});await loadDocs()}
- catch(e){docMessage(e)}
-}
-function drawDocs(){
- const grid=$('docGrid');grid.replaceChildren();
- for(const folder of folders){
-  const card=document.createElement('article');card.className='doc-card';
-  const title=document.createElement('h3');const items=docRows.filter(x=>x.xuwen_folder===folder);
-  title.textContent=folder+'（'+items.length+'）';card.append(title);
-  const actions=document.createElement('div');actions.className='doc-actions';
-  if(canEdit){
-   const picker=document.createElement('input');picker.type='file';picker.multiple=true;picker.accept=docTypes;
-   const up=docButton('＋ 上传文件',()=>picker.click());
-   picker.onchange=async()=>{await uploadDoc(folder,[...picker.files],up);picker.value=''};
-   actions.append(up,picker)
-  }
-  card.append(actions);
-  if(!items.length){const empty=document.createElement('div');empty.className='muted';empty.textContent='暂无文件';card.append(empty)}
-  for(const file of items){
-   const line=document.createElement('div');line.className='doc-file';
-   const info=document.createElement('div');info.className='doc-file-name';
-   const name=document.createElement('div');name.textContent=file.xuwen_file_name;
-   const sub=document.createElement('div');sub.className='muted';sub.textContent=docSize(file.xuwen_size_bytes)+' · '+new Date(file.xuwen_created_at).toLocaleDateString('zh-CN');
-   info.append(name,sub);line.append(info);
-   line.append(docButton('下载',()=>downloadDoc(file)));
-   if(canEdit)line.append(docButton('删除',()=>deleteDoc(file),true));
-   card.append(line)
-  }
-  grid.append(card)
- }
-}
-$('docReload').onclick=loadDocs;
+$('docReload').onclick=loadDocs;$('fmNew').onclick=fmNew;$('fmUpload').onclick=()=>$('fmPicker').click();$('fmPicker').onchange=async e=>{await fmUploadFiles([...e.target.files]);e.target.value=''};
+$('fmPaste').onclick=async()=>{try{const items=await navigator.clipboard.read();const files=[];for(const item of items)for(const type of item.types){if(type.startsWith('image/')||type==='application/pdf'){const blob=await item.getType(type);files.push(new File([blob],'粘贴文件_'+Date.now()+'.'+(type.split('/')[1]==='jpeg'?'jpg':type.split('/')[1]),{type}))}}if(!files.length)throw new Error('剪贴板没有浏览器允许读取的文件；可使用拖放或上传按钮');await fmUploadFiles(files)}catch(e){docMessage(e)}};
+$('fmDrop').ondragover=e=>{e.preventDefault();e.currentTarget.classList.add('drag')};$('fmDrop').ondragleave=e=>e.currentTarget.classList.remove('drag');$('fmDrop').ondrop=async e=>{e.preventDefault();e.currentTarget.classList.remove('drag');if(canEdit)await fmUploadFiles([...e.dataTransfer.files])};
 
 async function init(){if(!id||!/^[0-9a-f-]{36}$/i.test(id)){$('company').textContent='缺少有效公司ID';return}try{const me=await api('/api/me');if(me.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=me.user.xuwen_full_name||'';const list=await api('/api/spv/list');const record=list.records.find(x=>x.company.xuwen_id===id);if(!record)throw new Error('没有该项目公司的访问权限');const c=record.company,p=record.project||{};$('company').textContent=c.xuwen_company_name;$('project').textContent=p.xuwen_project_name||'项目资料未完善';$('companyStatus').textContent=c.xuwen_status==='active'?'正常':c.xuwen_status;$('projectStatus').textContent=p.xuwen_project_status||'—';$('capacity').textContent=p.xuwen_capacity_kw==null?'—':Number(p.xuwen_capacity_kw).toLocaleString()+' kW';canEdit=['superadmin','admin'].includes(me.user.xuwen_role)||me.user.xuwen_role==='manager';$('add').hidden=!canEdit;for(const [key,label,desc] of modules){const b=document.createElement('button');b.className='nav';b.textContent=label;b.onclick=()=>{current=key;$('moduleTitle').textContent=label;$('moduleDesc').textContent=desc;document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('docSection').hidden=key!=='documents';document.querySelector('.panel').hidden=key==='documents';$('add').hidden=key==='documents'||!canEdit;load()};$('nav').append(b)}$('nav').firstElementChild.click();for(const folder of folders){const o=document.createElement('option');o.value=folder;o.textContent=folder;$('folder').append(o)}}catch(e){showError(e);$('company').textContent='无法打开项目公司'}}init();
 </script></body></html>
