@@ -19,7 +19,7 @@
 
 .fm-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}.fm-crumb{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.fm-crumb button{border:0;background:transparent;color:#176448;cursor:pointer}.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px}.fm-item{background:#fff;border:1px solid #dae7dd;border-radius:12px;padding:12px;min-width:0}.fm-item .fm-icon{font-size:29px}.fm-name{overflow-wrap:anywhere;font-weight:600;font-size:13px;margin:7px 0}.fm-actions{display:flex;gap:5px;flex-wrap:wrap}.fm-actions button{font-size:12px;border:1px solid #c8dace;border-radius:6px;background:#fff;color:#176448;padding:4px 7px}.fm-drop{border:2px dashed #c0d8c8;border-radius:12px;padding:22px;text-align:center;margin:12px 0;background:#f9fcfa}.fm-drop.drag{background:#e5f5eb;border-color:#176448}.fm-filepicker{display:none}@media(max-width:650px){.fm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-/* V1.9.12 mobile layout: desktop behavior retained */
+/* V1.9.12 mobile layout */
 .mobile-menu,.mobile-shade{display:none}
 @media(max-width:760px){
  html,body{max-width:100%;overflow-x:hidden}body{font-size:15px}
@@ -72,8 +72,25 @@ body.folder-mode #docSection{margin-top:0}
 body.folder-mode #docSection>.head{margin-bottom:8px}
 body.folder-mode .fm-toolbar{margin:8px 0}
 @media(max-width:760px){body.folder-mode main{padding:8px 10px 18px}body.folder-mode #docSection{padding:10px}body.folder-mode #fmDrop{padding:10px;font-size:12px;margin:7px 0}body.folder-mode .fm-grid{margin-top:6px}}
-#fmCrumb{display:none!important}</style></head><body>
-<header class="top"><button type="button" id="mobileMenu" class="mobile-menu" aria-label="打开项目档案目录" aria-expanded="false">☰ 目录</button><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
+#fmCrumb{display:none!important}
+/* V1.9.16：桌面端与手机端统一按钮式目录，取消常驻侧栏 */
+@media(min-width:761px){
+ .mobile-menu{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#176448;border:0;border-radius:8px;padding:10px 15px;font-weight:700;min-height:40px}
+ .top{position:sticky;top:0;z-index:35;gap:16px}
+ .layout{display:block;min-height:calc(100vh - 65px)}
+ .layout>aside{display:block;position:fixed;z-index:51;top:0;bottom:0;left:0;width:min(390px,90vw);background:#fff;overflow-y:auto;padding:22px 16px;transform:translateX(-105%);transition:transform .2s ease;box-shadow:10px 0 35px #0002}
+ body.mobile-nav-open .layout>aside{transform:translateX(0)}
+ .mobile-shade{position:fixed;inset:0;background:#06180e99;z-index:50}
+ body.mobile-nav-open .mobile-shade{display:block}
+ .layout>aside:before{content:'项目档案目录 · 点击按钮进入';display:block;font-weight:700;font-size:18px;padding:8px 10px 18px}
+ .layout>aside .nav{display:block;width:100%;font-size:15px;min-width:0;white-space:normal;overflow-wrap:anywhere;border:1px solid #dce9df;margin-bottom:8px;padding:14px 15px;background:#f8fbf9}
+ .layout>aside .nav.active{background:#e5f3e9;border-color:#b8d8c3}
+ main{max-width:1500px;margin:0 auto;padding:22px 26px}
+}
+/* 所有设备的目录项均为大按钮 */
+.layout>aside .nav{border-radius:10px;min-height:46px;text-align:left}
+</style></head><body>
+<header class="top"><button type="button" id="mobileMenu" class="mobile-menu" aria-label="打开项目档案目录" aria-expanded="false">☰ 项目目录</button><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
 <div class="mobile-shade" id="mobileShade"></div><div class="layout"><aside><div id="nav"></div><button class="outline" id="newTab" style="width:100%;margin-top:12px">＋ 新建Tab</button></aside><main>
 <div class="head" id="companyHeader"><div><h1 id="company">正在读取项目公司...</h1><div class="muted" id="project"></div></div><button class="outline" id="refresh">刷新当前模块</button></div>
 <div class="cards" id="companyMetrics"><div class="card"><span class="muted">SPV公司</span><b id="companyStatus">—</b></div><div class="card"><span class="muted">项目状态</span><b id="projectStatus">—</b></div><div class="card"><span class="muted">装机容量</span><b id="capacity">—</b></div><div class="card"><span class="muted">集团持股</span><b>100%</b></div></div>
