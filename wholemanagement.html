@@ -13,7 +13,7 @@
 #licensePickBtn:hover{background:#0e4d35}#licensePickBtn:focus-visible{outline:3px solid #70c89a;outline-offset:2px}
 #licensePickBtn[hidden]{display:none!important}
 /* V1.9.19 私有营业执照直接预览 */
-#licensePreviewDialog{width:min(960px,calc(100% - 16px));max-height:96vh;padding:15px}
+.license-file-list{display:grid;gap:9px;margin:10px 0}.license-file-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #d8e7dc;padding:10px;border-radius:9px}.license-file-row span{flex:1;overflow-wrap:anywhere}.license-file-row button{padding:8px 10px;border:1px solid #bcd4c3;background:white;color:#176448;border-radius:7px}.license-file-row button.danger{color:#b43b3b;border-color:#efc6c6}#licensePreviewDialog{width:min(960px,calc(100% - 16px));max-height:96vh;padding:15px}
 .license-preview-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 #licensePreviewBody{min-height:140px;max-height:calc(96vh - 120px);overflow:auto;text-align:center;background:#f4f7f5;border-radius:8px}
 #licensePreviewBody img{display:block;max-width:100%;height:auto;margin:auto}
@@ -25,7 +25,7 @@
 <section class="panel" id="spvPanel"><div class="head"><div><h2>SPV项目公司一体化管理</h2><div class="muted">新增、编辑、查看公司及唯一项目；进入各SPV的15模块工作台</div></div><div><input id="search" class="search" placeholder="搜索公司或项目"> <button id="add" class="btn" hidden>＋ 新增SPV项目公司</button></div></div><div class="scroll"><table><thead><tr><th>SPV公司</th><th>项目名称</th><th>项目类型</th><th>项目状态</th><th>装机容量</th><th>预算投资</th><th>集团持股</th><th>操作</th></tr></thead><tbody id="rows"><tr><td colspan="8">正在加载...</td></tr></tbody></table></div><div id="mobileSpvCards" class="mobile-spv-cards"></div></section><div class="note">集团首页仅汇总经营数据；进入某家SPV后使用独立的15模块项目管理平台。未接入财务账簿的指标不显示虚构金额。</div></main>
 <dialog id="dialog"><form id="form"><h2 id="dialogTitle">新增SPV项目公司</h2><p class="muted">公司和唯一新能源项目统一保存</p><div class="form">
 <input type="hidden" name="company_id">
-<div class="field full"><label>SPV公司全称 *</label><input name="company_name" required></div><div class="field"><label>公司简称</label><input name="company_short_name"></div><div class="field"><label>统一社会信用代码</label><input name="credit_code"></div><div class="field"><label>法定代表人</label><input name="legal_representative"></div><div class="field"><label>公司状态</label><select name="company_status"><option value="active">正常</option><option value="inactive">停用</option><option value="closed">注销</option></select></div><div class="field full"><label>注册地址</label><input name="registered_address"></div><div class="field"><label>注册资本（元）</label><input type="number" min="0" step="0.01" name="registered_capital"></div><div class="field"><label>实缴资本（元）</label><input type="number" min="0" step="0.01" name="paid_in_capital"></div><div class="field"><label>成立日期</label><input type="date" name="established_date"></div><div class="field full"><label>公司备注</label><textarea name="company_notes"></textarea></div><div class="field full"><label>公司营业执照照片（JPG / PNG / WebP / PDF）</label><input id="licensePicker" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"><button type="button" id="licensePickBtn">📷 选择营业执照照片 / PDF</button><div id="licenseStatus" class="muted" style="margin-top:8px">未选择文件</div><button type="button" class="outline" id="licenseView" hidden>预览营业执照</button><div class="muted">支持上传照片或PDF；WebP将自动转换为JPG。文件仅授权用户可查看。</div></div>
+<div class="field full"><label>SPV公司全称 *</label><input name="company_name" required></div><div class="field"><label>公司简称</label><input name="company_short_name"></div><div class="field"><label>统一社会信用代码</label><input name="credit_code"></div><div class="field"><label>法定代表人</label><input name="legal_representative"></div><div class="field"><label>公司状态</label><select name="company_status"><option value="active">正常</option><option value="inactive">停用</option><option value="closed">注销</option></select></div><div class="field full"><label>注册地址</label><input name="registered_address"></div><div class="field"><label>注册资本（元）</label><input type="number" min="0" step="0.01" name="registered_capital"></div><div class="field"><label>实缴资本（元）</label><input type="number" min="0" step="0.01" name="paid_in_capital"></div><div class="field"><label>成立日期</label><input type="date" name="established_date"></div><div class="field full"><label>公司备注</label><textarea name="company_notes"></textarea></div><div class="field full"><label>公司营业执照照片（JPG / PNG / WebP / PDF）</label><input id="licensePicker" type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf"><button type="button" id="licensePickBtn">📷 选择营业执照照片 / PDF（可多选）</button><div id="licenseStatus" class="muted" style="margin-top:8px">未选择文件</div><div id="licenseFileList" class="license-file-list"></div><button type="button" class="outline" id="licenseView" hidden>预览营业执照</button><div class="muted">支持上传照片或PDF；WebP将自动转换为JPG。文件仅授权用户可查看。</div></div>
 <div class="field full"><h2>唯一新能源项目</h2></div><div class="field full"><label>项目名称 *</label><input name="project_name" required></div><div class="field"><label>项目编号</label><input name="project_code"></div><div class="field"><label>项目类型 *</label><select name="project_type" required><option value="solar">屋顶光伏</option><option value="storage">储能</option><option value="wind">风电</option><option value="other">其他新能源</option></select></div><div class="field"><label>项目状态</label><select name="project_status"><option value="planning">筹划中</option><option value="approved">已备案</option><option value="construction">建设中</option><option value="commissioning">调试验收</option><option value="operating">运营中</option><option value="suspended">暂停</option><option value="disposed">已处置</option></select></div><div class="field full"><label>项目地址</label><input name="project_location"></div><div class="field"><label>装机容量（kW）</label><input name="capacity_kw" type="number" min="0" step="0.01"></div><div class="field"><label>预算投资（元）</label><input name="budget_amount" type="number" min="0" step="0.01"></div><div class="field"><label>实际投资（元）</label><input name="actual_investment" type="number" min="0" step="0.01"></div><div class="field"><label>开工日期</label><input name="start_date" type="date"></div><div class="field"><label>投运日期</label><input name="operation_date" type="date"></div><div class="field full"><label>项目备注</label><textarea name="project_notes"></textarea></div></div><p id="formError" class="error"></p><div class="foot"><button class="outline" type="button" id="cancel">取消</button><button class="btn" id="save" type="submit">保存</button></div></form></dialog>
 <dialog id="licensePreviewDialog" aria-label="营业执照预览"><div class="license-preview-bar"><strong id="licensePreviewTitle">营业执照预览</strong><div><button type="button" class="outline" id="licensePreviewDownload">下载</button> <button type="button" class="outline" id="licensePreviewClose">关闭</button></div></div><div id="licensePreviewBody"></div><p id="licensePreviewError" class="error"></p></dialog>
 <script>
@@ -72,31 +72,55 @@ async function licenseUpload(companyId,file){
    const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'上传分片失败');parts.push({part_number:d.part_number,etag:d.etag});
   }
   await api('/api/spv/fs/multipart/complete','POST',{company_id:companyId,id:start.id,parts});
-  await api('/api/spv/license/save','POST',{company_id:companyId,file_id:start.id});
+  await api('/api/spv/license/files/add','POST',{company_id:companyId,file_id:start.id});
  }catch(e){await api('/api/spv/fs/multipart/abort','POST',{company_id:companyId,id:start.id}).catch(()=>{});throw e}
 }
-async function licenseRead(companyId){const d=await api('/api/spv/license?company_id='+encodeURIComponent(companyId));return d.record||null}
+let licenseFiles=[],licenseReadonly=false;
+async function licenseRead(companyId){const d=await api('/api/spv/license/files?company_id='+encodeURIComponent(companyId));return d.records||[]}
+function licenseRenderList(){
+ const root=$('licenseFileList');root.replaceChildren();
+ if(!licenseFiles.length){root.textContent='尚未上传营业执照';return}
+ for(const item of licenseFiles){
+  const row=document.createElement('div');row.className='license-file-row';
+  const name=document.createElement('span');name.textContent='📄 '+item.xuwen_file_name;
+  const preview=document.createElement('button');preview.type='button';preview.textContent='预览';preview.onclick=()=>licensePreview(item);
+  const download=document.createElement('button');download.type='button';download.textContent='下载';download.onclick=()=>licenseDownload(item);
+  row.append(name,preview,download);
+  if(!licenseReadonly){const del=document.createElement('button');del.type='button';del.className='danger';del.textContent='删除';del.onclick=()=>licenseDelete(item);row.append(del)}
+  root.append(row);
+ }
+}
+async function licenseDelete(item){
+ if(!confirm('确定删除这张营业执照？\n'+item.xuwen_file_name+'\n删除后无法从营业执照列表恢复。'))return;
+ try{
+  await api('/api/spv/license/files/delete','POST',{company_id:licenseCompanyId,id:item.xuwen_id});
+  // 关联删除后，调用现有R2文件删除接口；若失败，提示残留文件可从档案中删除
+  let cleanupError='';
+  try{await api('/api/spv/fs/file/delete','POST',{company_id:licenseCompanyId,id:item.xuwen_file_id})}catch(e){cleanupError='附件已从列表删除，但原文件清理失败：'+e.message}
+  licenseFiles=await licenseRead(licenseCompanyId);licenseRenderList();$('licenseStatus').textContent=cleanupError||'已删除附件';
+ }catch(e){$('licenseStatus').textContent='删除失败：'+e.message}
+}
 let licensePreviewUrl=null,licensePreviewBlob=null;
 function licensePreviewCleanup(){
  $('licensePreviewBody').replaceChildren();
  if(licensePreviewUrl){URL.revokeObjectURL(licensePreviewUrl);licensePreviewUrl=null}
  licensePreviewBlob=null;
 }
-async function licenseFetchBlob(){
- if(!licenseCompanyId||!licenseExisting)throw new Error('尚未上传营业执照');
- const url=API+'/api/spv/fs/file/download?company_id='+encodeURIComponent(licenseCompanyId)+'&id='+encodeURIComponent(licenseExisting.xuwen_file_id);
+async function licenseFetchBlob(item=licenseExisting){
+ if(!licenseCompanyId||!item)throw new Error('尚未上传营业执照');
+ const url=API+'/api/spv/fs/file/download?company_id='+encodeURIComponent(licenseCompanyId)+'&id='+encodeURIComponent(item.xuwen_file_id);
  const r=await fetch(url,{credentials:'include'});
  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||'营业执照读取失败')}
  return await r.blob();
 }
-async function licensePreview(){
- if(!licenseCompanyId||!licenseExisting)return;
- $('licensePreviewError').textContent='';$('licensePreviewTitle').textContent=licenseExisting.xuwen_file_name||'营业执照预览';
+async function licensePreview(item=licenseExisting){
+ if(!licenseCompanyId||!item)return;
+ $('licensePreviewError').textContent='';$('licensePreviewTitle').textContent=item.xuwen_file_name||'营业执照预览';
  licensePreviewCleanup();$('licensePreviewBody').textContent='正在加载营业执照...';$('licensePreviewDialog').showModal();
  try{
-  const blob=await licenseFetchBlob();
+  licenseExisting=item;const blob=await licenseFetchBlob(item);
   if(!$('licensePreviewDialog').open)return;
-  const name=(licenseExisting.xuwen_file_name||'').toLowerCase();
+  const name=(item.xuwen_file_name||'').toLowerCase();
   const pdf=blob.type==='application/pdf'||name.endsWith('.pdf');
   const image=blob.type.startsWith('image/')||/\.(jpg|jpeg|png|webp|gif|bmp)$/.test(name);
   if(!pdf&&!image)throw new Error('当前文件格式无法直接预览，请使用下载按钮');
@@ -108,11 +132,11 @@ async function licensePreview(){
   $('licensePreviewBody').replaceChildren(node);
  }catch(e){$('licensePreviewBody').replaceChildren();$('licensePreviewError').textContent=e.message}
 }
-async function licenseDownload(){
+async function licenseDownload(item=licenseExisting){
  try{
-  const blob=licensePreviewBlob||await licenseFetchBlob();
+  const blob=(licensePreviewBlob&&item===licenseExisting)?licensePreviewBlob:await licenseFetchBlob(item);
   const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=licenseExisting.xuwen_file_name||'营业执照';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  a.href=url;a.download=item.xuwen_file_name||'营业执照';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
  }catch(e){$('licensePreviewError').textContent=e.message}
 }
 $('licenseView').onclick=licensePreview;
@@ -120,12 +144,12 @@ $('licensePreviewDownload').onclick=licenseDownload;
 $('licensePreviewClose').onclick=()=>$('licensePreviewDialog').close();
 $('licensePreviewDialog').addEventListener('close',licensePreviewCleanup);
 $('licensePickBtn').onclick=()=>{if(!$('licensePicker').disabled)$('licensePicker').click()};
-$('licensePicker').onchange=e=>{$('licenseStatus').textContent=e.target.files[0]?.name||'未选择文件'};
-function edit(r=null,readonly=false){const f=$('form');f.reset();const c=r?.company||{},p=r?.project||{};const map={company_id:c.xuwen_id,company_name:c.xuwen_company_name,company_short_name:c.xuwen_company_short_name,credit_code:c.xuwen_credit_code,legal_representative:c.xuwen_legal_representative,company_status:c.xuwen_status,registered_address:c.xuwen_registered_address,registered_capital:c.xuwen_registered_capital,paid_in_capital:c.xuwen_paid_in_capital,established_date:c.xuwen_established_date,company_notes:c.xuwen_notes,project_name:p.xuwen_project_name,project_code:p.xuwen_project_code,project_type:p.xuwen_project_type,project_status:p.xuwen_project_status,project_location:p.xuwen_project_location,capacity_kw:p.xuwen_capacity_kw,budget_amount:p.xuwen_budget_amount,actual_investment:p.xuwen_actual_investment,start_date:p.xuwen_start_date,operation_date:p.xuwen_operation_date,project_notes:p.xuwen_notes};for(const e of f.elements)if(e.name){e.value=map[e.name]??e.value;e.disabled=readonly} $('save').hidden=readonly;$('dialogTitle').textContent=readonly?'查看SPV公司':r?'编辑SPV公司':'新增SPV公司';$('formError').textContent='';licenseCompanyId=c.xuwen_id||null;licenseExisting=null;$('licensePicker').value='';$('licensePicker').disabled=readonly;$('licensePickBtn').hidden=readonly;$('licenseView').hidden=true;$('licenseStatus').textContent='正在读取营业执照...';$('dialog').showModal();if(licenseCompanyId){licenseRead(licenseCompanyId).then(v=>{if(licenseCompanyId!==c.xuwen_id)return;licenseExisting=v;$('licenseView').hidden=!v;$('licenseStatus').textContent=v?'已上传：'+v.xuwen_file_name:(readonly?'尚未上传营业执照；请点击“编辑”进行上传':'尚未上传营业执照，请点击绿色按钮选择文件')}).catch(e=>{$('licenseStatus').textContent='读取失败：'+e.message})}else{$('licenseStatus').textContent='点击绿色按钮选择文件，保存公司时同步上传'} }
+$('licensePicker').onchange=e=>{$('licenseStatus').textContent=e.target.files.length?'已选择 '+e.target.files.length+' 个文件：'+[...e.target.files].map(x=>x.name).join('、'):'未选择文件'};
+function edit(r=null,readonly=false){const f=$('form');f.reset();const c=r?.company||{},p=r?.project||{};const map={company_id:c.xuwen_id,company_name:c.xuwen_company_name,company_short_name:c.xuwen_company_short_name,credit_code:c.xuwen_credit_code,legal_representative:c.xuwen_legal_representative,company_status:c.xuwen_status,registered_address:c.xuwen_registered_address,registered_capital:c.xuwen_registered_capital,paid_in_capital:c.xuwen_paid_in_capital,established_date:c.xuwen_established_date,company_notes:c.xuwen_notes,project_name:p.xuwen_project_name,project_code:p.xuwen_project_code,project_type:p.xuwen_project_type,project_status:p.xuwen_project_status,project_location:p.xuwen_project_location,capacity_kw:p.xuwen_capacity_kw,budget_amount:p.xuwen_budget_amount,actual_investment:p.xuwen_actual_investment,start_date:p.xuwen_start_date,operation_date:p.xuwen_operation_date,project_notes:p.xuwen_notes};for(const e of f.elements)if(e.name){e.value=map[e.name]??e.value;e.disabled=readonly} $('save').hidden=readonly;$('dialogTitle').textContent=readonly?'查看SPV公司':r?'编辑SPV公司':'新增SPV公司';$('formError').textContent='';licenseCompanyId=c.xuwen_id||null;licenseExisting=null;licenseFiles=[];licenseReadonly=readonly;$('licensePicker').value='';$('licensePicker').disabled=readonly;$('licensePickBtn').hidden=readonly;$('licenseView').hidden=true;$('licenseStatus').textContent='正在读取营业执照...';licenseRenderList();$('dialog').showModal();if(licenseCompanyId){licenseRead(licenseCompanyId).then(v=>{if(licenseCompanyId!==c.xuwen_id)return;licenseFiles=v;licenseRenderList();$('licenseStatus').textContent='已上传 '+v.length+' 个附件'}).catch(e=>{$('licenseStatus').textContent='读取失败：'+e.message})}else{$('licenseStatus').textContent='选择多张图片后，保存公司时同步上传'} }
 async function refresh(){try{$('error').textContent='';const d=await api('/api/group/overview');records=d.records||[];canManage=!!d.can_manage;$('add').hidden=!canManage;$('count').textContent=d.spv_count??0;$('operating').textContent=d.operating_count??0;$('capacity').textContent='总装机 '+(d.capacity_kw??0)+' kW';render()}catch(e){$('error').textContent=e.message}}
-$('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,values={};for(const x of f.elements)if(x.name&&!x.disabled)values[x.name]=x.value;$('save').disabled=true;try{const selected=$('licensePicker').files[0];if(selected)await licenseNormalize(selected);
+$('form').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,values={};for(const x of f.elements)if(x.name&&!x.disabled)values[x.name]=x.value;$('save').disabled=true;try{const selected=[...$('licensePicker').files];for(const file of selected)await licenseNormalize(file);
 const previousId=values.company_id;await api('/api/spv/save','POST',values);await refresh();
-if(selected){const companyId=previousId||records.find(r=>r.company.xuwen_company_name===values.company_name)?.company.xuwen_id;if(!companyId)throw new Error('公司已保存，但无法确定公司ID，请重新编辑上传营业执照');$('licenseStatus').textContent='正在上传营业执照，请稍候...';await licenseUpload(companyId,selected)}
+if(selected.length){const companyId=previousId||records.find(r=>r.company.xuwen_company_name===values.company_name)?.company.xuwen_id;if(!companyId)throw new Error('公司已保存，但无法确定公司ID，请重新编辑上传营业执照');$('licenseStatus').textContent='正在上传营业执照，请稍候...';for(let i=0;i<selected.length;i++){$('licenseStatus').textContent='正在上传营业执照 '+(i+1)+'/'+selected.length;await licenseUpload(companyId,selected[i])}}
 $('dialog').close()}catch(err){$('formError').textContent=err.message}finally{$('save').disabled=false}};
 $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('aria-expanded')==='true';$('summaryToggle').setAttribute('aria-expanded',String(!expanded));$('summaryBody').hidden=expanded};$('cancel').onclick=()=>$('dialog').close();$('add').onclick=()=>edit();$('search').oninput=render;$('refresh').onclick=refresh;$('logout').onclick=async()=>{await api('/api/logout','POST',{});location.replace('login.html')};(async()=>{try{const d=await api('/api/me');if(d.user.xuwen_must_change_password){location.replace('login.html');return}$('user').textContent=d.user.xuwen_full_name||'';await refresh()}catch(e){$('error').textContent=e.message}})();
 </script></body></html>
