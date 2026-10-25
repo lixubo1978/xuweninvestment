@@ -11,6 +11,22 @@
 <div class="field full"><h2>唯一新能源项目</h2></div><div class="field full"><label>项目名称 *</label><input name="project_name" required></div><div class="field"><label>项目编号</label><input name="project_code"></div><div class="field"><label>项目类型 *</label><select name="project_type" required><option value="solar">屋顶光伏</option><option value="storage">储能</option><option value="wind">风电</option><option value="other">其他新能源</option></select></div><div class="field"><label>项目状态</label><select name="project_status"><option value="planning">筹划中</option><option value="approved">已备案</option><option value="construction">建设中</option><option value="commissioning">调试验收</option><option value="operating">运营中</option><option value="suspended">暂停</option><option value="disposed">已处置</option></select></div><div class="field full"><label>项目地址</label><input name="project_location"></div><div class="field"><label>装机容量（kW）</label><input name="capacity_kw" type="number" min="0" step="0.01"></div><div class="field"><label>预算投资（元）</label><input name="budget_amount" type="number" min="0" step="0.01"></div><div class="field"><label>实际投资（元）</label><input name="actual_investment" type="number" min="0" step="0.01"></div><div class="field"><label>开工日期</label><input name="start_date" type="date"></div><div class="field"><label>投运日期</label><input name="operation_date" type="date"></div><div class="field full"><label>项目备注</label><textarea name="project_notes"></textarea></div></div><p id="formError" class="error"></p><div class="foot"><button class="outline" type="button" id="cancel">取消</button><button class="btn" id="save" type="submit">保存</button></div></form></dialog>
 <script>
 'use strict';const API='https://api-xuwen.shuofengtechnology.com',$=x=>document.getElementById(x);let records=[],canManage=false;
+// 连续10分钟无操作：主动注销并返回登录页。
+const IDLE_LIMIT_MS=10*60*1000;
+let lastActivity=Date.now(),idleExiting=false;
+function idleExit(){
+  if(idleExiting)return;
+  idleExiting=true;
+  fetch(API+'/api/logout',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:'{}',keepalive:true}).catch(()=>{});
+  location.replace('login.html?reason=idle');
+}
+function idleCheck(){if(!idleExiting&&Date.now()-lastActivity>=IDLE_LIMIT_MS)idleExit()}
+function idleTouch(){idleCheck();if(!idleExiting)lastActivity=Date.now()}
+for(const name of ['pointerdown','keydown','touchstart','wheel','scroll']){window.addEventListener(name,idleTouch,{passive:true,capture:true})}
+window.addEventListener('focus',idleCheck);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)idleCheck()});
+window.addEventListener('pageshow',idleCheck);
+setInterval(idleCheck,5000);
 const statuses={planning:'筹划中',approved:'已备案',construction:'建设中',commissioning:'调试验收',operating:'运营中',suspended:'暂停',disposed:'已处置'};const types={solar:'屋顶光伏',storage:'储能',wind:'风电',other:'其他新能源'};
 async function api(path,method='GET',data){const r=await fetch(API+path,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||'请求失败');return d}
 function td(t){const e=document.createElement('td');e.textContent=t??'—';return e}function link(t,fn){const b=document.createElement('button');b.className='link';b.textContent=t;b.onclick=fn;return b}function yuan(n){return n==null?'—':Number(n).toLocaleString('zh-CN')+' 元'}
