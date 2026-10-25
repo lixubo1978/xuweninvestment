@@ -18,9 +18,55 @@
 @media(max-width:600px){.doc-grid{grid-template-columns:1fr}}
 
 .fm-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}.fm-crumb{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.fm-crumb button{border:0;background:transparent;color:#176448;cursor:pointer}.fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px}.fm-item{background:#fff;border:1px solid #dae7dd;border-radius:12px;padding:12px;min-width:0}.fm-item .fm-icon{font-size:29px}.fm-name{overflow-wrap:anywhere;font-weight:600;font-size:13px;margin:7px 0}.fm-actions{display:flex;gap:5px;flex-wrap:wrap}.fm-actions button{font-size:12px;border:1px solid #c8dace;border-radius:6px;background:#fff;color:#176448;padding:4px 7px}.fm-drop{border:2px dashed #c0d8c8;border-radius:12px;padding:22px;text-align:center;margin:12px 0;background:#f9fcfa}.fm-drop.drag{background:#e5f5eb;border-color:#176448}.fm-filepicker{display:none}@media(max-width:650px){.fm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* V1.9.12 mobile layout: desktop behavior retained */
+.mobile-menu,.mobile-shade{display:none}
+@media(max-width:760px){
+ html,body{max-width:100%;overflow-x:hidden}body{font-size:15px}
+ .top{position:sticky;top:0;z-index:35;padding:12px 14px;min-height:58px;flex-wrap:nowrap;gap:9px}
+ .top strong{font-size:14px;line-height:1.35;flex:1;min-width:0}.top>div{font-size:12px;white-space:nowrap}.top #user{display:none}
+ .mobile-menu{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#176448;border:0;border-radius:8px;padding:9px 11px;min-height:40px;font-weight:700}
+ .layout{display:block;min-height:calc(100dvh - 58px)}
+ .layout>aside{display:block;position:fixed;z-index:51;top:0;bottom:0;left:0;width:min(82vw,330px);background:white;overflow-y:auto;padding:22px 14px;transform:translateX(-105%);transition:transform .2s ease;box-shadow:10px 0 30px #0002}
+ body.mobile-nav-open .layout>aside{transform:translateX(0)}
+ .mobile-shade{position:fixed;inset:0;background:#06180ea8;z-index:50}
+ body.mobile-nav-open .mobile-shade{display:block}
+ .layout>aside:before{content:'项目档案目录';display:block;font-weight:700;font-size:18px;padding:8px 10px 16px}
+ .nav{display:block;width:100%;min-width:0;padding:14px 12px;font-size:14px;white-space:normal;overflow-wrap:anywhere}
+ main{padding:15px 12px 34px;min-width:0}.head{gap:10px}h1{font-size:19px;line-height:1.35;overflow-wrap:anywhere}h2{font-size:16px}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}
+ .card,.panel{padding:13px;border-radius:10px;min-width:0}.card b{font-size:18px;overflow-wrap:anywhere;margin-top:8px}
+ #overviewPanel>.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #overviewPanel>.cards .card:last-child{grid-column:1/-1}
+ #openCash{width:100%;min-height:46px}#overviewPanel>.head{align-items:stretch}
+ #refresh,.outline,.btn{min-height:42px}.fm-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fm-toolbar>button{width:100%;min-width:0}
+ .fm-grid{grid-template-columns:1fr;gap:10px}.fm-item{padding:14px}.fm-actions button{min-height:36px;padding:7px 10px}
+ .fm-drop{padding:13px;font-size:12px}.fm-crumb{line-height:1.8}
+ dialog{position:fixed;inset:0;margin:auto;width:100%!important;max-width:none;max-height:none;height:100dvh;border-radius:0;padding:16px 14px 26px;overflow-y:auto;overscroll-behavior:contain}
+ dialog::backdrop{background:#06180eaa}dialog .form{grid-template-columns:1fr;gap:13px}dialog .full{grid-column:auto}
+ .field input,.field select,.field textarea{font-size:16px;min-height:44px}dialog .foot{position:sticky;bottom:-26px;background:white;padding:12px 0 20px;margin-top:14px;border-top:1px solid #edf0ee}dialog .foot button{flex:1;min-height:46px}
+ #cashDialog .cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}#cashDialog .cards .card{padding:9px 7px}#cashDialog .cards .card b{font-size:14px;letter-spacing:-.4px}#cashDialog .cards .muted{font-size:11px}
+ #cashDialog>.fm-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+ #cashDialog>.fm-toolbar label{align-self:end;margin:0;font-size:12px}
+ #cashDialog>.fm-toolbar .search{width:100%!important;min-width:0;font-size:16px;height:44px}
+ #cashDialog>.fm-toolbar #cashStart{grid-column:1;grid-row:2}#cashDialog>.fm-toolbar #cashEnd{grid-column:2;grid-row:2}
+ #cashDialog>.fm-toolbar #cashThisMonth{grid-column:1}#cashDialog>.fm-toolbar #cashDirection{grid-column:2}
+ #cashDialog>.fm-toolbar #cashSearch{grid-column:1/-1}#cashDialog>.fm-toolbar #cashAdd{grid-column:1}#cashDialog>.fm-toolbar #cashReload{grid-column:2}
+ #cashDialog .scroll{overflow:visible}#cashDialog table{min-width:0;display:block}#cashDialog thead{display:none}#cashDialog tbody{display:grid;gap:10px}
+ #cashDialog tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:5px 9px;border:1px solid #dae7dd;border-radius:12px;background:white;padding:12px;box-shadow:0 1px 3px #0000000b}
+ #cashDialog tbody td{display:block;border:0;padding:3px 0;font-size:13px;overflow-wrap:anywhere}
+ #cashDialog tbody td:before{content:attr(data-label);display:block;font-size:11px;color:#789082;margin-bottom:3px}
+ #cashDialog tbody td:nth-child(3){grid-column:1/-1;grid-row:1;font-size:15px;font-weight:700;color:#213a2b}
+ #cashDialog tbody td:nth-child(4){font-size:20px;font-weight:700;color:#176448}
+ #cashDialog tbody tr[data-direction=expense] td:nth-child(4){color:#b54a36}
+ #cashDialog tbody td:nth-child(7){grid-column:1/-1}#cashDialog tbody td:nth-child(8){grid-column:1}#cashDialog tbody td:nth-child(9){grid-column:2;display:flex;align-items:end;justify-content:flex-end;flex-wrap:wrap;gap:6px}
+ #cashDialog tbody td:nth-child(9):before{display:none}#cashDialog tbody td .link{padding:8px 4px;min-height:36px}
+ #cashDialog tbody tr.cash-empty{display:block}#cashDialog tbody tr.cash-empty td:before{display:none}
+}
+@media(max-width:370px){.top strong{font-size:12px}.top>div{font-size:11px}#cashDialog .cards .card b{font-size:12px}}
 </style></head><body>
-<header class="top"><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
-<div class="layout"><aside><div id="nav"></div><button class="outline" id="newTab" style="width:100%;margin-top:12px">＋ 新建Tab</button></aside><main>
+<header class="top"><button type="button" id="mobileMenu" class="mobile-menu" aria-label="打开项目档案目录" aria-expanded="false">☰ 目录</button><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
+<div class="mobile-shade" id="mobileShade"></div><div class="layout"><aside><div id="nav"></div><button class="outline" id="newTab" style="width:100%;margin-top:12px">＋ 新建Tab</button></aside><main>
 <div class="head"><div><h1 id="company">正在读取项目公司...</h1><div class="muted" id="project"></div></div><button class="outline" id="refresh">刷新当前模块</button></div>
 <div class="cards"><div class="card"><span class="muted">SPV公司</span><b id="companyStatus">—</b></div><div class="card"><span class="muted">项目状态</span><b id="projectStatus">—</b></div><div class="card"><span class="muted">装机容量</span><b id="capacity">—</b></div><div class="card"><span class="muted">集团持股</span><b>100%</b></div></div>
 <section class="panel" id="overviewPanel"><div class="head"><h2>经营总览</h2><button class="btn" id="openCash">费用流水管理</button></div><div class="cards" style="margin:8px 0"><div class="card"><span class="muted">累计收入</span><b id="sumIncome">¥0.00</b></div><div class="card"><span class="muted">累计支出</span><b id="sumExpense">¥0.00</b></div><div class="card"><span class="muted">净现金流</span><b id="sumNet">¥0.00</b></div></div><p class="muted">点击「费用流水管理」，在独立窗口中新增、修改、删除和筛选收支记录。统计仅依据录入流水，不代表银行账户实际余额。</p></section>
@@ -208,6 +254,10 @@ $('fmPaste').onclick=async()=>{try{const items=await navigator.clipboard.read();
 $('fmDrop').ondragover=e=>{e.preventDefault();e.currentTarget.classList.add('drag')};$('fmDrop').ondragleave=e=>e.currentTarget.classList.remove('drag');$('fmDrop').ondrop=async e=>{e.preventDefault();e.currentTarget.classList.remove('drag');if(!canEdit)return;try{const entries=await fmEntriesFromDrop(e.dataTransfer);await fmImport(entries)}catch(err){docMessage(err)}};
 
 
+function mobileCloseNav(){document.body.classList.remove('mobile-nav-open');const b=$('mobileMenu');if(b)b.setAttribute('aria-expanded','false')}
+$('mobileMenu').onclick=()=>{const opened=document.body.classList.toggle('mobile-nav-open');$('mobileMenu').setAttribute('aria-expanded',String(opened))};
+$('mobileShade').onclick=mobileCloseNav;
+window.addEventListener('keydown',e=>{if(e.key==='Escape')mobileCloseNav()});
 let cashEntries=[],cashEditing=null;
 const money=n=>'¥'+Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
 function renderNav(){
@@ -218,8 +268,8 @@ function renderNav(){
  }
  $('newTab').hidden=!canEdit;
 }
-function showOverview(){current='overview';$('overviewPanel').hidden=false;$('docSection').hidden=true;renderNav();loadCash().catch(e=>$('cashError').textContent=e.message)}
-function showFolder(fid){current='documents';fmHere=fid;$('overviewPanel').hidden=true;$('docSection').hidden=false;const f=fmFolders.find(x=>x.xuwen_id===fid);$('folderTitle').textContent=f?f.xuwen_name:'项目文件';renderNav();drawDocs()}
+function showOverview(){mobileCloseNav();current='overview';$('overviewPanel').hidden=false;$('docSection').hidden=true;renderNav();loadCash().catch(e=>$('cashError').textContent=e.message)}
+function showFolder(fid){mobileCloseNav();current='documents';fmHere=fid;$('overviewPanel').hidden=true;$('docSection').hidden=false;const f=fmFolders.find(x=>x.xuwen_id===fid);$('folderTitle').textContent=f?f.xuwen_name:'项目文件';renderNav();drawDocs()}
 const oldLoadDocs=loadDocs;
 loadDocs=async function(){await oldLoadDocs();renderNav();if(current==='documents'){$('folderTitle').textContent=fmFolders.find(x=>x.xuwen_id===fmHere)?.xuwen_name||'项目文件';}};
 $('newTab').onclick=async()=>{const name=prompt('请输入新Tab名称（对应项目档案根目录文件夹）');if(!name?.trim())return;try{const d=await api('/api/spv/fs/folder','POST',{company_id:id,parent_id:null,name:name.trim()});await loadDocs();showFolder(d.folder.xuwen_id)}catch(e){alert(e.message)}};
@@ -235,8 +285,8 @@ function renderCash(){
  const allExpense=cashEntries.filter(x=>x.xuwen_direction==='expense').reduce((s,x)=>s+Number(x.xuwen_amount),0);
  $('sumIncome').textContent=money(allIncome);$('sumExpense').textContent=money(allExpense);$('sumNet').textContent=money(allIncome-allExpense);
  const tbody=$('cashRows');tbody.replaceChildren();
- for(const r of filtered){const tr=document.createElement('tr');for(const value of [r.xuwen_entry_date,r.xuwen_direction==='income'?'收入':'支出',r.xuwen_title,Number(r.xuwen_amount).toLocaleString('zh-CN',{minimumFractionDigits:2}),r.xuwen_counterparty||'',r.xuwen_payment_method||'',r.xuwen_notes||''])tr.append(textCell(value));const invoiceTd=document.createElement('td');if(r.xuwen_invoice_file_id)invoiceTd.append(btn('下载发票',()=>cashDownloadInvoice(r.xuwen_invoice_file_id)));else invoiceTd.textContent='未上传';tr.append(invoiceTd);const td=document.createElement('td');if(canEdit){td.append(btn('编辑',()=>cashEdit(r)),btn('删除',()=>cashDelete(r),true))}tr.append(td);tbody.append(tr)}
- if(!filtered.length){const tr=document.createElement('tr'),td=textCell('暂无流水');td.colSpan=9;tr.append(td);tbody.append(tr)}
+ for(const r of filtered){const tr=document.createElement('tr');tr.dataset.direction=r.xuwen_direction;for(const value of [r.xuwen_entry_date,r.xuwen_direction==='income'?'收入':'支出',r.xuwen_title,Number(r.xuwen_amount).toLocaleString('zh-CN',{minimumFractionDigits:2}),r.xuwen_counterparty||'',r.xuwen_payment_method||'',r.xuwen_notes||'']){const cell=textCell(value);cell.dataset.label=['日期','类型','事项','金额（元）','交易对方','支付方式','备注'][tr.children.length];tr.append(cell)}const invoiceTd=document.createElement('td');invoiceTd.dataset.label='发票';if(r.xuwen_invoice_file_id)invoiceTd.append(btn('下载发票',()=>cashDownloadInvoice(r.xuwen_invoice_file_id)));else invoiceTd.textContent='未上传';tr.append(invoiceTd);const td=document.createElement('td');td.dataset.label='操作';if(canEdit){td.append(btn('编辑',()=>cashEdit(r)),btn('删除',()=>cashDelete(r),true))}tr.append(td);tbody.append(tr)}
+ if(!filtered.length){const tr=document.createElement('tr'),td=textCell('暂无流水');tr.className='cash-empty';td.colSpan=9;tr.append(td);tbody.append(tr)}
  $('cashAdd').hidden=!canEdit;
 }
 function cashEdit(r=null){cashEditing=r?.xuwen_id||null;const f=$('cashForm');f.reset();$('cashEditTitle').textContent=r?'编辑流水':'新增流水';f.elements.entry_date.value=r?.xuwen_entry_date||new Date().toLocaleDateString('en-CA');f.elements.direction.value=r?.xuwen_direction||'expense';f.elements.title.value=r?.xuwen_title||'';f.elements.amount.value=r?.xuwen_amount??'';f.elements.counterparty.value=r?.xuwen_counterparty||'';f.elements.payment_method.value=r?.xuwen_payment_method||'';f.elements.notes.value=r?.xuwen_notes||'';$('cashInvoice').value='';$('cashInvoiceExisting').replaceChildren();if(r?.xuwen_invoice_file_id)$('cashInvoiceExisting').append(btn('查看原发票（不更换可直接保存）',()=>cashDownloadInvoice(r.xuwen_invoice_file_id)));$('cashInvoiceHint').textContent=r?.xuwen_invoice_file_id?'已有发票，可选新照片替换':'必须选择一张发票照片后才能保存';$('cashFormError').textContent='';$('cashEditDialog').showModal()}
