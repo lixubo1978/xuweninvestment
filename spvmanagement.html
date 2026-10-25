@@ -90,7 +90,7 @@ body.folder-mode .fm-toolbar{margin:8px 0}
 /* 所有设备的目录项均为大按钮 */
 .layout>aside .nav{border-radius:10px;min-height:46px;text-align:left}
 
-/* V1.9.22：仅恢复电脑端左侧常驻 Tab；≤760px 手机布局完全沿用 V1.9.16。 */
+/* V1.9.23：仅恢复电脑端左侧常驻 Tab；≤760px 手机布局完全沿用 V1.9.16。 */
 @media (min-width:761px){
   .mobile-menu{display:none!important}
   .mobile-shade{display:none!important}
@@ -99,7 +99,14 @@ body.folder-mode .fm-toolbar{margin:8px 0}
   .layout>aside:before{display:none!important}
   .layout>aside .nav{display:block!important;width:100%!important;min-width:0!important;min-height:0!important;margin-bottom:4px!important;padding:13px 14px!important;background:transparent!important;border:0!important;border-radius:9px!important;font-size:14px!important;white-space:normal!important}
   .layout>aside .nav.active{background:#e5f3e9!important;color:#176448!important}
-  main{max-width:1450px!important;margin:0!important;width:100%!important;padding:26px!important}
+  /* V1.9.23 电脑端：内容填满侧栏以外的全部宽度 */
+  main{max-width:none!important;margin:0!important;width:100%!important;min-width:0!important;padding:24px clamp(16px,2vw,36px)!important}
+  .layout{width:100%!important;max-width:none!important}
+  main>.cards,main>.panel,main>section{max-width:none!important;width:100%}
+  #companyMetrics{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #overviewPanel>.cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  @media(max-width:1120px){#companyMetrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
 }
 </style></head><body>
 <header class="top"><button type="button" id="mobileMenu" class="mobile-menu" aria-label="打开项目档案目录" aria-expanded="false">☰ 项目目录</button><strong>序文投资 · SPV项目公司管理</strong><div><a href="wholemanagement.html">← 返回集团总览</a>　<span id="user"></span></div></header>
