@@ -34,6 +34,43 @@
 'use strict';
 const API='https://api-xuwen.shuofengtechnology.com';
 const $=id=>document.getElementById(id);
+// V1.9.9：连续10分钟无用户操作，主动撤销服务端会话并返回登录页。
+const XUWEN_IDLE_MS=10*60*1000;
+const XUWEN_IDLE_KEY='xuwen_spv_last_activity';
+let xuwenIdleClosing=false;
+let xuwenLastActivity=Number(sessionStorage.getItem(XUWEN_IDLE_KEY))||Date.now();
+function xuwenLogoutIdle(){
+ if(xuwenIdleClosing)return;
+ xuwenIdleClosing=true;
+ sessionStorage.removeItem(XUWEN_IDLE_KEY);
+ // 不等待网络：页面立即离开；keepalive尽量确保注销请求送达。
+ fetch(API+'/api/logout',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:'{}',keepalive:true}).catch(()=>{});
+ location.replace('login.html?reason=idle');
+}
+function xuwenCheckIdle(){
+ if(xuwenIdleClosing)return;
+ const stored=Number(sessionStorage.getItem(XUWEN_IDLE_KEY));
+ if(stored>0)xuwenLastActivity=stored;
+ if(Date.now()-xuwenLastActivity>=XUWEN_IDLE_MS)xuwenLogoutIdle();
+}
+function xuwenTouchIdle(){
+ if(xuwenIdleClosing)return;
+ xuwenCheckIdle();
+ if(xuwenIdleClosing)return;
+ const now=Date.now();
+ if(now-xuwenLastActivity<1000)return;
+ xuwenLastActivity=now;
+ sessionStorage.setItem(XUWEN_IDLE_KEY,String(now));
+}
+if(!sessionStorage.getItem(XUWEN_IDLE_KEY))sessionStorage.setItem(XUWEN_IDLE_KEY,String(xuwenLastActivity));
+for(const type of ['pointerdown','keydown','touchstart','scroll','wheel']){
+ window.addEventListener(type,xuwenTouchIdle,{passive:true,capture:true});
+}
+window.addEventListener('focus',xuwenCheckIdle);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)xuwenCheckIdle()});
+window.addEventListener('pageshow',xuwenCheckIdle);
+setInterval(xuwenCheckIdle,5000);
+xuwenCheckIdle();
 const modules=[['overview','经营总览','经营指标、工作事项和管理备注'],['company','公司档案','工商信息补充资料、重要变更'],['equity','股权资本','出资、实缴、股权变更'],['licenses','证照账户','许可证照、银行账户资料'],['initiation','项目立项','备案、审批、立项进展'],['construction','项目建设','EPC、施工进度、验收'],['assets','资产管理','设备台账、资产变动、折旧'],['financing','融资债务','贷款、借款、利息及还款'],['revenue','收入经营','电费、应收款、经营收入'],['cashflow','资金现金流','资金收付及往来'],['contracts','合同管理','合同、履约、付款'],['finance','财务税务','会计、税费及报表'],['insurance','保险风险','保单、续保、风险事项'],['documents','项目档案','多级文件夹及原格式文件管理'],['approvals','审批操作记录','内部审批事项及管理记录']];
 const folders=['备案证明','并网验收材料','购售电合同','竣工验收材料','能源管理合同（EMC）','荷载报告','EPC施工合同','保险相关材料','环评相关材料','结算单','融资相关材料','项目公司相关材料','用能企业相关材料','项目现场照片','TUV报告'];
 const id=new URLSearchParams(location.search).get('company_id');
