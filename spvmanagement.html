@@ -290,20 +290,17 @@ async function fmUploadFiles(files){await fmImport(fmEntriesFromPicker(files))}
 
 function fmIsPdf(f){return /\.pdf$/i.test((f.xuwen_file_name||'').trim())||String(f.xuwen_content_type||'').split(';')[0].trim().toLowerCase()==='application/pdf'}
 async function fmOpenPdf(f){
- let tab=null,url=null;
+ const tab=window.open('about:blank','_blank');if(!tab){docMessage(new Error('浏览器拦截了新窗口，请允许本站弹出窗口后重试。'));return}
+ tab.opener=null;tab.document.title=f.xuwen_file_name||'PDF预览';const body=tab.document.body;body.style.cssText='font:16px/1.8 system-ui;padding:24px';const message=tab.document.createElement('p');message.textContent='正在连接PDF预览…';body.replaceChildren(message);
+ const preview=API+'/api/spv/fs/file/preview?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id),download=API+'/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id);
+ const retry=tab.document.createElement('a');retry.textContent='重试打开';retry.href=preview;retry.style.marginRight='20px';const fallback=tab.document.createElement('a');fallback.textContent='下载到电脑查看';fallback.href=download;body.append(retry,fallback);
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
  try{
-  tab=window.open('about:blank','_blank');
-  if(!tab)throw new Error('浏览器拦截了新窗口，请允许本站弹出窗口后再次点击“打开”。');
-  tab.opener=null;tab.document.title=f.xuwen_file_name||'PDF预览';tab.document.body.textContent='正在加载PDF，请稍候…';
-  const r=await fetch(API+'/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id),{credentials:'include'});
-  if(r.status===401){tab.close();xuwenRedirectLogin('expired');return}
-  if(!r.ok){let message='PDF打开失败';try{message=(await r.json()).error||message}catch{}throw new Error(message)}
-  const original=await r.blob();if(tab.closed)return;
-  url=URL.createObjectURL(new Blob([original],{type:'application/pdf'}));
-  const frame=tab.document.createElement('iframe');frame.title=f.xuwen_file_name||'PDF预览';frame.src=url;frame.style.cssText='display:block;width:100%;height:100vh;border:0';
-  tab.document.body.style.margin='0';tab.document.body.replaceChildren(frame);
-  const previewUrl=url,watch=setInterval(()=>{if(tab.closed){URL.revokeObjectURL(previewUrl);clearInterval(watch)}},10000);
- }catch(e){if(url)URL.revokeObjectURL(url);if(tab&&!tab.closed)tab.close();docMessage(e)}
+  const r=await fetch(preview,{method:'HEAD',credentials:'include',signal:controller.signal});
+  if(!r.ok){if(r.status===401)throw new Error('登录已失效，请回管理平台重新登录后打开。');if(r.status===403)throw new Error('当前账号没有此文件的查看权限。');if(r.status===404)throw new Error('文件不存在，或Worker尚未更新到V1.9.49。');throw new Error('预览连接失败（'+r.status+'），请重试或下载查看。')}
+  if(!String(r.headers.get('Content-Type')||'').includes('application/pdf'))throw new Error('预览接口未返回PDF，请先更新Worker。');
+  if(!tab.closed)tab.location.replace(preview);
+ }catch(e){const text=e.name==='AbortError'?'连接超过20秒，请点击重试，或下载到电脑查看。':e.message;if(!tab.closed)message.textContent=text;docMessage(new Error(text))}finally{clearTimeout(timeout)}
 }
 
 async function fmDownload(f){try{const u='/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id);const r=await fetch(API+u,{credentials:'include'});if(r.status===401){xuwenRedirectLogin('expired');return}if(!r.ok){const d=await r.json();throw new Error(d.error||'下载失败')}const b=await r.blob(),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=f.xuwen_file_name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){docMessage(e)}}
