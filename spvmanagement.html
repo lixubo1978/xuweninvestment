@@ -288,6 +288,24 @@ async function fmEntriesFromDrop(dt){
 }
 async function fmUploadFiles(files){await fmImport(fmEntriesFromPicker(files))}
 
+function fmIsPdf(f){return /\.pdf$/i.test((f.xuwen_file_name||'').trim())||String(f.xuwen_content_type||'').split(';')[0].trim().toLowerCase()==='application/pdf'}
+async function fmOpenPdf(f){
+ let tab=null,url=null;
+ try{
+  tab=window.open('about:blank','_blank');
+  if(!tab)throw new Error('浏览器拦截了新窗口，请允许本站弹出窗口后再次点击“打开”。');
+  tab.opener=null;tab.document.title=f.xuwen_file_name||'PDF预览';tab.document.body.textContent='正在加载PDF，请稍候…';
+  const r=await fetch(API+'/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id),{credentials:'include'});
+  if(r.status===401){tab.close();xuwenRedirectLogin('expired');return}
+  if(!r.ok){let message='PDF打开失败';try{message=(await r.json()).error||message}catch{}throw new Error(message)}
+  const original=await r.blob();if(tab.closed)return;
+  url=URL.createObjectURL(new Blob([original],{type:'application/pdf'}));
+  const frame=tab.document.createElement('iframe');frame.title=f.xuwen_file_name||'PDF预览';frame.src=url;frame.style.cssText='display:block;width:100%;height:100vh;border:0';
+  tab.document.body.style.margin='0';tab.document.body.replaceChildren(frame);
+  const previewUrl=url,watch=setInterval(()=>{if(tab.closed){URL.revokeObjectURL(previewUrl);clearInterval(watch)}},10000);
+ }catch(e){if(url)URL.revokeObjectURL(url);if(tab&&!tab.closed)tab.close();docMessage(e)}
+}
+
 async function fmDownload(f){try{const u='/api/spv/fs/file/download?company_id='+encodeURIComponent(id)+'&id='+encodeURIComponent(f.xuwen_id);const r=await fetch(API+u,{credentials:'include'});if(r.status===401){xuwenRedirectLogin('expired');return}if(!r.ok){const d=await r.json();throw new Error(d.error||'下载失败')}const b=await r.blob(),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=f.xuwen_file_name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){docMessage(e)}}
 async function fmRenameFile(f){const name=prompt('新文件名',f.xuwen_file_name);if(name&&name!==f.xuwen_file_name)await fmAction('/api/spv/fs/file/edit',{id:f.xuwen_id,name,folder_id:f.xuwen_folder_id})}
 async function fmMoveFile(f,copy=false){try{const dest=fmChooseDestination();if(dest===undefined)return;await fmAction(copy?'/api/spv/fs/file/copy':'/api/spv/fs/file/edit',{id:f.xuwen_id,folder_id:dest})}catch(e){docMessage(e)}}
@@ -296,7 +314,7 @@ function drawDocs(){const grid=$('docGrid'),crumb=$('fmCrumb');grid.replaceChild
  const child=fmFolders.filter(x=>x.xuwen_parent_id===fmHere),files=fmFiles.filter(x=>x.xuwen_folder_id===fmHere);
  function card(icon,name,meta){const box=document.createElement('div');box.className='fm-item';const symbol=document.createElement('div');symbol.className='fm-icon';symbol.textContent=icon;const title=document.createElement('div');title.className='fm-name';title.textContent=name;const sub=document.createElement('div');sub.className='muted';sub.textContent=meta;const actions=document.createElement('div');actions.className='fm-actions';box.append(symbol,title,sub,actions);grid.append(box);return {box,title,actions}}
  for(const f of child){const c=card('📁',f.xuwen_name,'文件夹');c.box.ondblclick=()=>fmOpen(f.xuwen_id);c.actions.append(fmBtn('打开',()=>fmOpen(f.xuwen_id)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFolder(f)),fmBtn('移动',()=>fmMoveFolder(f)),fmBtn('删除',()=>fmDeleteFolder(f)));}
- for(const f of files){const c=card('📄',f.xuwen_file_name,docSize(f.xuwen_size_bytes));c.box.ondblclick=()=>fmDownload(f);c.actions.append(fmBtn('下载',()=>fmDownload(f)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFile(f)),fmBtn('移动',()=>fmMoveFile(f)),fmBtn('复制',()=>fmMoveFile(f,true)),fmBtn('删除',()=>fmDeleteFile(f)));}
+ for(const f of files){const c=card('📄',f.xuwen_file_name,docSize(f.xuwen_size_bytes));c.box.ondblclick=()=>fmIsPdf(f)?fmOpenPdf(f):fmDownload(f);if(fmIsPdf(f))c.actions.append(fmBtn('打开',()=>fmOpenPdf(f)));c.actions.append(fmBtn('下载',()=>fmDownload(f)));if(canEdit)c.actions.append(fmBtn('改名',()=>fmRenameFile(f)),fmBtn('移动',()=>fmMoveFile(f)),fmBtn('复制',()=>fmMoveFile(f,true)),fmBtn('删除',()=>fmDeleteFile(f)));}
  if(!child.length&&!files.length){const x=document.createElement('div');x.className='muted';x.textContent='当前文件夹为空，可直接拖入文件';grid.append(x)}
  $('fmNew').hidden=!canEdit;$('fmUploadFolder').hidden=!canEdit;$('fmUpload').hidden=!canEdit;$('fmPaste').hidden=!canEdit;$('fmDrop').hidden=!canEdit;
 }
@@ -624,7 +642,7 @@ async function load(){const d=await api('/api/spv/finance?company_id='+encodeURI
 function openAdminStages(){buildAdminRows();$f('fmAdminDialog').showModal()}
 function buildAdminRows(){$f('fmAdminError').textContent='';const p=parameters(),box=$f('fmAdminRows');box.replaceChildren();const enabled=$f('fmAdminEnabled');enabled.value=p.adminStagesEnabled===1?'1':'0';enabled.disabled=!canWrite;$f('fmAdminPreset').disabled=!canWrite;$f('fmAddAdminStage').disabled=!canWrite;
  const online=result?.online||fmISO(fmAdd(fmDate(p.start),2.5));$f('fmAdminBasis').textContent='运营第1年从并网日 '+online+' 起算，第9年开始日期为 '+fmISO(fmAdd(fmDate(online),96))+'。不以银行结清日自动触发。';
- for(const [i,r]of (p.adminStages||[]).entries()){const row=document.createElement('section');row.className='fm-section';const heading=document.createElement('b');heading.textContent='管理费阶段（发工资人数） '+(i+1);row.append(heading);const grid=document.createElement('div');grid.className='fm-grid';for(const [key,label]of [['from','从运营第几年开始'],['to','至运营第几年结束（含）'],['amount','阶段首年全年其他管理费（含税元）']]){const field=document.createElement('label');field.className='fm-field';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='number';input.min=key==='amount'?'0':'1';if(key!=='amount')input.max='25';input.step=key==='amount'?'0.01':'1';input.value=r[key];input.disabled=!canWrite||p.adminStagesEnabled!==1;input.oninput=()=>{r[key]=input.value===''?NaN:Number(input.value);changed()};field.append(text,input);grid.append(field)}row.append(grid);const del=document.createElement('button');del.textContent='删除此阶段';del.disabled=!canWrite||p.adminStagesEnabled!==1;del.onclick=()=>{p.adminStages.splice(i,1);buildAdminRows();changed()};row.append(del);box.append(row)}
+ for(const [i,r]of (p.adminStages||[]).entries()){const row=document.createElement('section');row.className='fm-section';const heading=document.createElement('b');heading.textContent='管理费阶段 '+(i+1);row.append(heading);const grid=document.createElement('div');grid.className='fm-grid';for(const [key,label]of [['from','从运营第几年开始'],['to','至运营第几年结束（含）'],['amount','阶段首年全年其他管理费（含税元）']]){const field=document.createElement('label');field.className='fm-field';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='number';input.min=key==='amount'?'0':'1';if(key!=='amount')input.max='25';input.step=key==='amount'?'0.01':'1';input.value=r[key];input.disabled=!canWrite||p.adminStagesEnabled!==1;input.oninput=()=>{r[key]=input.value===''?NaN:Number(input.value);changed()};field.append(text,input);grid.append(field)}row.append(grid);const del=document.createElement('button');del.textContent='删除此阶段';del.disabled=!canWrite||p.adminStagesEnabled!==1;del.onclick=()=>{p.adminStages.splice(i,1);buildAdminRows();changed()};row.append(del);box.append(row)}
 }
 $f('fmOpenAdmin').onclick=openAdminStages;
 $f('fmAdminEnabled').onchange=()=>{parameters().adminStagesEnabled=Number($f('fmAdminEnabled').value);buildAdminRows();changed()};
