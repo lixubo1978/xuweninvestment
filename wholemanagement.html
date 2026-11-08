@@ -181,18 +181,18 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
 })();
 </script>
 <style>#gcDialog{width:min(1250px,96vw)}.gc-scroll{overflow:auto;margin-top:15px}.gc-scroll table{min-width:1000px}.gc-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.gc-tools input,.gc-tools select{max-width:190px}.gc-total{display:flex;gap:15px;flex-wrap:wrap;background:#e7f1ea;padding:16px;border-radius:9px;margin:14px 0}.gc-total b{font-size:20px}#gcEdit{width:min(760px,96vw)}#gcEntryPanel[hidden]{display:none!important}</style>
-<dialog id="gcDialog"><div class="head"><div><h2>集团费用流水登记 · 收入／支出</h2><p class="muted">只记录集团公司自身收支，与项目公司独立。净收支为收入减支出，不等同于账户余额或会计利润。</p></div><button id="gcClose" class="outline">关闭</button></div><div class="gc-tools"><label>开始 <input id="gcStart" type="date" class="search"></label><label>结束 <input id="gcEnd" type="date" class="search"></label><select id="gcDirection" class="search"><option value="">全部收支</option><option value="income">收入</option><option value="expense">支出</option></select><input id="gcSearch" class="search" maxlength="200" placeholder="搜索事项／对方／备注"><button id="gcApply" class="outline">查询</button><button id="gcMonth" class="outline">本月</button><button id="gcAll" class="outline">全部</button><button id="gcAdd" class="btn">＋ 新增流水</button></div><div class="gc-total"><span>筛选收入 <b id="gcIncome">0.00</b> 元</span><span>筛选支出 <b id="gcExpense">0.00</b> 元</span><span>筛选净收支 <b id="gcNet">0.00</b> 元</span></div><p id="gcMessage" class="error" role="status"></p><div class="gc-scroll"><table><thead><tr><th>日期</th><th>收支</th><th>事项</th><th>金额（元）</th><th>交易对方</th><th>支付方式</th><th>填写人</th><th>发票照片</th><th>凭证编号／说明</th><th>备注</th><th>操作</th></tr></thead><tbody id="gcRows"></tbody></table></div><div class="foot"><span id="gcPage"></span><button id="gcPrev" class="outline">上一页</button><button id="gcNext" class="outline">下一页</button></div></dialog>
-<dialog id="gcEdit"><form id="gcForm"><h2 id="gcEditTitle">新增集团流水</h2><div class="form"><div class="field"><label>日期 *</label><input name="entry_date" type="date" required></div><div class="field"><label>收支类型 *</label><select name="direction"><option value="expense">支出</option><option value="income">收入</option></select></div><div class="field full"><label>事项 *</label><input name="title" maxlength="200" required></div><div class="field"><label>金额（元）*</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label>交易对方</label><input name="counterparty" maxlength="200"></div><div class="field"><label>支付方式</label><input name="payment_method" maxlength="100" placeholder="银行转账／现金等"></div><div class="field"><label>填写人 *</label><select id="gcMember" name="filled_by" required></select></div><div class="field full"><label>发票照片 *（JPG／PNG／WebP，不超过10MB）</label><input id="gcInvoice" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div id="gcPhotoState" class="muted"></div><div style="display:flex;gap:10px;margin-top:8px"><button id="gcPhotoPreview" type="button" class="outline">预览照片</button><button id="gcPhotoDelete" type="button" class="outline">删除照片</button></div></div><div class="field full"><label>凭证编号／说明（选填）</label><input name="voucher_ref" maxlength="500" placeholder="银行回单号、发票号或凭证说明"></div><div class="field full"><label>备注</label><textarea name="notes" rows="3" maxlength="3000"></textarea></div></div><p id="gcFormMessage" class="error" role="status"></p><div class="foot"><button id="gcCancel" type="button" class="outline">取消</button><button id="gcSave" type="submit" class="btn">保存流水</button></div></form></dialog>
+<dialog id="gcDialog"><div class="head"><div><h2>集团费用流水登记 · 收入／支出</h2><p class="muted">只记录集团公司自身收支，与项目公司独立。净收支为收入减支出，不等同于账户余额或会计利润。</p></div><button id="gcClose" class="outline">关闭</button></div><div class="gc-tools"><label>开始 <input id="gcStart" type="date" class="search"></label><label>结束 <input id="gcEnd" type="date" class="search"></label><select id="gcDirection" class="search"><option value="">全部收支</option><option value="income">收入</option><option value="expense">支出</option></select><input id="gcSearch" class="search" maxlength="200" placeholder="搜索事项／对方／备注"><button id="gcApply" class="outline">查询</button><button id="gcMonth" class="outline">本月</button><button id="gcAll" class="outline">全部</button><button id="gcAdd" class="btn">＋ 新增流水</button></div><div class="gc-total"><span>筛选收入 <b id="gcIncome">0.00</b> 元</span><span>筛选支出 <b id="gcExpense">0.00</b> 元</span><span>筛选净收支 <b id="gcNet">0.00</b> 元</span></div><p id="gcMessage" class="error" role="status"></p><div class="gc-scroll"><table><thead><tr><th>日期</th><th>收支</th><th>事项</th><th>金额（元）</th><th>交易对方</th><th>账号</th><th>开户行</th><th>联系人</th><th>联系电话</th><th>支付方式</th><th>填写人</th><th>发票照片</th><th>凭证编号／说明</th><th>备注</th><th>操作</th></tr></thead><tbody id="gcRows"></tbody></table></div><div class="foot"><span id="gcPage"></span><button id="gcPrev" class="outline">上一页</button><button id="gcNext" class="outline">下一页</button></div></dialog>
+<dialog id="gcEdit"><form id="gcForm"><h2 id="gcEditTitle">新增集团流水</h2><div class="form"><div class="field"><label>日期 *</label><input name="entry_date" type="date" required></div><div class="field"><label>收支类型 *</label><select name="direction"><option value="expense">支出</option><option value="income">收入</option></select></div><div class="field full"><label>事项 *</label><input name="title" maxlength="200" required></div><div class="field"><label>金额（元）*</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field"><label for="gcPayeeName">交易对方</label><input id="gcPayeeName" name="counterparty" maxlength="200" placeholder="可手工输入姓名或单位名称"><select id="gcPayeeSelect" style="margin-top:7px" aria-label="选择已有收款方"><option value="">手工填写／选择已有收款方</option></select><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:7px"><button id="gcPayeeAdd" type="button" class="outline" disabled>＋ 新增收款方</button><button id="gcPayeeReload" type="button" class="outline">刷新收款方</button></div><div id="gcPayeeHint" class="muted" role="status"></div></div><div class="field"><label>账号</label><input name="counterparty_account" type="text" maxlength="100" autocomplete="off"></div><div class="field"><label>开户行</label><input name="counterparty_bank" maxlength="200"></div><div class="field"><label>对方联系人</label><input name="counterparty_contact" maxlength="100"></div><div class="field"><label>联系电话</label><input name="counterparty_phone" type="tel" maxlength="100"></div><div class="field"><label>支付方式</label><input name="payment_method" maxlength="100" placeholder="银行转账／现金等"></div><div class="field"><label>填写人 *</label><select id="gcMember" name="filled_by" required></select></div><div class="field full"><label>发票照片 *（JPG／PNG／WebP，不超过10MB）</label><input id="gcInvoice" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"><div id="gcPhotoState" class="muted"></div><div style="display:flex;gap:10px;margin-top:8px"><button id="gcPhotoPreview" type="button" class="outline">预览照片</button><button id="gcPhotoDelete" type="button" class="outline">删除照片</button></div></div><div class="field full"><label>凭证编号／说明（选填）</label><input name="voucher_ref" maxlength="500" placeholder="银行回单号、发票号或凭证说明"></div><div class="field full"><label>备注</label><textarea name="notes" rows="3" maxlength="3000"></textarea></div></div><p id="gcFormMessage" class="error" role="status"></p><div class="foot"><button id="gcCancel" type="button" class="outline">取消</button><button id="gcSave" type="submit" class="btn">保存流水</button></div></form></dialog>
 <dialog id="gcPhotoDialog" style="width:min(1000px,96vw)"><div class="head"><h2>发票照片预览</h2><button id="gcPhotoClose" class="outline">关闭</button></div><img id="gcPhotoImage" alt="发票照片" style="display:block;max-width:100%;height:auto;margin:auto"><p id="gcPhotoError" class="error"></p></dialog>
 <script>
 (()=>{'use strict';const el=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});let invoiceId=null,draftId=null,photoUrl=null;let entries=[],members=[],currentUser=null,page=0,total=0,busy=false,editing=null,listToken=0,filters={start:'',end:'',direction:'',search:''};
  const panel=document.createElement('section');panel.id='gcEntryPanel';panel.className='panel';panel.style.marginBottom='15px';panel.hidden=true;const head=document.createElement('div');head.className='head';const text=document.createElement('div'),title=document.createElement('h2'),note=document.createElement('p');title.textContent='集团费用流水登记';note.className='muted';note.textContent='登记集团自身开销和收入，独立于SPV项目公司流水';text.append(title,note);const enter=document.createElement('button');enter.className='btn';enter.textContent='进入费用流水登记';enter.id='gcOpen';head.append(text,enter);panel.append(head);document.getElementById('spvPanel').before(panel);
  function td(s){const c=document.createElement('td');c.textContent=s??'—';return c}
  function button(t,fn){const b=document.createElement('button');b.type='button';b.className='link';b.textContent=t;b.disabled=busy;b.onclick=fn;return b}
- function draw(){el('gcRows').replaceChildren();for(const r of entries){const row=document.createElement('tr');row.append(...[r.xuwen_entry_date,r.xuwen_direction==='income'?'收入':'支出',r.xuwen_title,money(r.xuwen_amount),r.xuwen_counterparty,r.xuwen_payment_method,r.xuwen_filled_by_name].map(td));const photo=td('');if(r.xuwen_invoice_file_id)photo.append(button('预览',()=>preview(r.xuwen_invoice_file_id)));else photo.textContent='待补传';row.append(photo,...[r.xuwen_voucher_ref,r.xuwen_notes].map(td));const action=td('');action.append(button('编辑',()=>edit(r)),button('删除',()=>remove(r)));row.append(action);el('gcRows').append(row)}if(!entries.length){const row=document.createElement('tr'),c=td('暂无流水');c.colSpan=11;row.append(c);el('gcRows').append(row)}el('gcPage').textContent='共 '+total+' 条 · 第 '+(page+1)+' / '+Math.max(1,Math.ceil(total/100))+' 页（合计涵盖全部筛选结果）';el('gcPrev').disabled=busy||page===0;el('gcNext').disabled=busy||(page+1)*100>=total}
+ function draw(){el('gcRows').replaceChildren();for(const r of entries){const row=document.createElement('tr');row.append(...[r.xuwen_entry_date,r.xuwen_direction==='income'?'收入':'支出',r.xuwen_title,money(r.xuwen_amount),r.xuwen_counterparty,r.xuwen_counterparty_account,r.xuwen_counterparty_bank,r.xuwen_counterparty_contact,r.xuwen_counterparty_phone,r.xuwen_payment_method,r.xuwen_filled_by_name].map(td));const photo=td('');if(r.xuwen_invoice_file_id)photo.append(button('预览',()=>preview(r.xuwen_invoice_file_id)));else photo.textContent='待补传';row.append(photo,...[r.xuwen_voucher_ref,r.xuwen_notes].map(td));const action=td('');action.append(button('编辑',()=>edit(r)),button('删除',()=>remove(r)));row.append(action);el('gcRows').append(row)}if(!entries.length){const row=document.createElement('tr'),c=td('暂无流水');c.colSpan=15;row.append(c);el('gcRows').append(row)}el('gcPage').textContent='共 '+total+' 条 · 第 '+(page+1)+' / '+Math.max(1,Math.ceil(total/100))+' 页（合计涵盖全部筛选结果）';el('gcPrev').disabled=busy||page===0;el('gcNext').disabled=busy||(page+1)*100>=total}
  async function load(){const token=++listToken;el('gcMessage').textContent='正在加载…';try{const q=new URLSearchParams({...filters,page:String(page)}),d=await api('/api/group/cash/list?'+q);if(token!==listToken)return;entries=d.records||[];total=Number(d.count||0);el('gcIncome').textContent=money(d.income);el('gcExpense').textContent=money(d.expense);el('gcNet').textContent=money(Number(d.income)-Number(d.expense));draw();el('gcMessage').textContent=''}catch(e){if(token===listToken)el('gcMessage').textContent=e.message}}
  function apply(){filters={start:el('gcStart').value,end:el('gcEnd').value,direction:el('gcDirection').value,search:el('gcSearch').value.trim()};page=0;return load()}
- async function edit(r=null){if(busy)return;await discardDraft();editing=r;invoiceId=r?.xuwen_invoice_file_id||null;el('gcForm').reset();photoState();el('gcFormMessage').textContent='';el('gcEditTitle').textContent=r?'编辑集团流水':'新增集团流水';const f=el('gcForm');for(const name of ['entry_date','direction','title','amount','counterparty','payment_method','voucher_ref','notes'])f.elements[name].value=r?.['xuwen_'+name]??(name==='entry_date'?new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'}):name==='direction'?'expense':'');el('gcMember').replaceChildren();try{const d=await api('/api/users');members=(d.records||[]).filter(m=>m.xuwen_status==='active'||m.xuwen_id===r?.xuwen_filled_by);for(const m of members){const o=document.createElement('option');o.value=m.xuwen_id;o.textContent=m.xuwen_full_name+(m.xuwen_status==='active'?'':'（历史填写人）');el('gcMember').append(o)}el('gcMember').value=r?.xuwen_filled_by||currentUser?.xuwen_id||'';el('gcEdit').showModal()}catch(e){el('gcMessage').textContent=e.message}}
+ async function edit(r=null){if(busy)return;await discardDraft();editing=r;invoiceId=r?.xuwen_invoice_file_id||null;el('gcForm').reset();photoState();el('gcFormMessage').textContent='';el('gcEditTitle').textContent=r?'编辑集团流水':'新增集团流水';const f=el('gcForm');for(const name of ['entry_date','direction','title','amount','counterparty','counterparty_account','counterparty_bank','counterparty_contact','counterparty_phone','payment_method','voucher_ref','notes'])f.elements[name].value=r?.['xuwen_'+name]??(name==='entry_date'?new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Shanghai'}):name==='direction'?'expense':'');window.xuwenGroupPayeeEdit(r);el('gcMember').replaceChildren();try{const d=await api('/api/users');members=(d.records||[]).filter(m=>m.xuwen_status==='active'||m.xuwen_id===r?.xuwen_filled_by);for(const m of members){const o=document.createElement('option');o.value=m.xuwen_id;o.textContent=m.xuwen_full_name+(m.xuwen_status==='active'?'':'（历史填写人）');el('gcMember').append(o)}el('gcMember').value=r?.xuwen_filled_by||currentUser?.xuwen_id||'';el('gcEdit').showModal()}catch(e){el('gcMessage').textContent=e.message}}
  async function remove(r){if(busy||!confirm('删除集团流水“'+r.xuwen_title+'”？删除后从有效流水及合计中移除，历史记录保留。'))return;busy=true;draw();try{await api('/api/group/cash/delete','POST',{id:r.xuwen_id,revision:r.xuwen_revision});if(entries.length===1&&page>0)page--;await load()}catch(e){el('gcMessage').textContent=e.message}finally{busy=false;draw()}}
  el('gcForm').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;el('gcSave').disabled=true;el('gcInvoice').disabled=true;el('gcFormMessage').textContent='正在保存…';const data=Object.fromEntries(new FormData(el('gcForm')));if(editing){data.id=editing.xuwen_id;data.revision=editing.xuwen_revision}try{const chosen=el('gcInvoice').files[0];if(!invoiceId){if(!chosen)throw Error('必须上传发票照片后才能保存流水');const image=await normalize(chosen);const response=await fetch(API+'/api/group/cash/invoice/upload',{method:'POST',credentials:'include',headers:{'Content-Type':image.type},body:image});if(response.status===401){location.replace('login.html?reason=expired');throw Error('登录已失效')}const uploaded=await response.json();if(!response.ok||!uploaded.success)throw Error(uploaded.error||'照片上传失败');invoiceId=uploaded.id;draftId=invoiceId}data.invoice_file_id=invoiceId;const oldId=editing?.xuwen_invoice_file_id;await api('/api/group/cash/save','POST',data);draftId=null;el('gcEdit').close();if(oldId&&oldId!==invoiceId)await api('/api/group/cash/invoice/delete','POST',{id:oldId}).catch(()=>{});await load()}catch(e){el('gcFormMessage').textContent=e.message}finally{busy=false;el('gcSave').disabled=false;el('gcInvoice').disabled=false;draw()}};
 
@@ -220,23 +220,23 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
 #supplierEntry[hidden] { display:none!important }
 </style>
 <dialog id="supplierDialog" aria-labelledby="supplierTitle">
-  <div class="head"><div><h2 id="supplierTitle">供应商管理</h2><p class="muted">集团统一维护供应商资料，账号按文本保存。</p></div><button id="supplierClose" type="button" class="outline">关闭</button></div>
+  <div class="head"><div><h2 id="supplierTitle">收款方管理</h2><p class="muted">集团统一维护收款方资料，账号按文本保存。</p></div><button id="supplierClose" type="button" class="outline">关闭</button></div>
   <div class="supplier-tools">
-    <input id="supplierSearch" class="search" maxlength="200" placeholder="搜索名称、联系人、电话、账号等" aria-label="搜索供应商">
-    <select id="supplierStatus" class="search" aria-label="供应商状态"><option value="">全部状态</option><option value="active">启用</option><option value="inactive">停用</option></select>
+    <input id="supplierSearch" class="search" maxlength="200" placeholder="搜索名称、联系人、电话、账号等" aria-label="搜索收款方">
+    <select id="supplierStatus" class="search" aria-label="收款方状态"><option value="">全部状态</option><option value="active">启用</option><option value="inactive">停用</option></select>
     <button id="supplierQuery" type="button" class="outline">查询</button>
     <button id="supplierReload" type="button" class="outline">刷新</button>
-    <button id="supplierAdd" type="button" class="btn">＋ 新增供应商</button>
+    <button id="supplierAdd" type="button" class="btn">＋ 新增收款方</button>
   </div>
   <p id="supplierMessage" class="error" role="status"></p>
-  <div class="supplier-scroll"><table><thead><tr><th>供应商名称</th><th>分类</th><th>联系人</th><th>电话</th><th>账户名称</th><th>账号</th><th>开户行</th><th>状态</th><th>操作</th></tr></thead><tbody id="supplierRows"></tbody></table></div>
+  <div class="supplier-scroll"><table><thead><tr><th>收款方名称</th><th>分类</th><th>联系人</th><th>电话</th><th>账户名称</th><th>账号</th><th>开户行</th><th>状态</th><th>操作</th></tr></thead><tbody id="supplierRows"></tbody></table></div>
   <div class="foot"><span id="supplierPage"></span><button id="supplierPrev" type="button" class="outline">上一页</button><button id="supplierNext" type="button" class="outline">下一页</button></div>
 </dialog>
 <dialog id="supplierEditDialog" aria-labelledby="supplierEditTitle">
   <form id="supplierForm">
-    <h2 id="supplierEditTitle">新增供应商</h2>
+    <h2 id="supplierEditTitle">新增收款方</h2>
     <div class="form">
-      <div class="field full"><label for="supplierName">供应商名称 *</label><input id="supplierName" name="name" maxlength="200" required></div>
+      <div class="field full"><label for="supplierName">收款方名称 *</label><input id="supplierName" name="name" maxlength="200" required></div>
       <div class="field"><label for="supplierCategory">分类</label><input id="supplierCategory" name="category" maxlength="100" placeholder="EPC、设备、运维、保险等"></div>
       <div class="field"><label for="supplierFormStatus">状态</label><select id="supplierFormStatus" name="status"><option value="active">启用</option><option value="inactive">停用</option></select></div>
       <div class="field"><label for="supplierContact">对方联系人</label><input id="supplierContact" name="contact_name" maxlength="100"></div>
@@ -250,7 +250,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
       <div class="field full"><label for="supplierNotes">备注</label><textarea id="supplierNotes" name="notes" maxlength="3000" rows="3"></textarea></div>
     </div>
     <p id="supplierFormMessage" class="error" role="status"></p>
-    <div class="foot"><button id="supplierCancel" type="button" class="outline">取消</button><button id="supplierSave" type="submit" class="btn">保存供应商</button></div>
+    <div class="foot"><button id="supplierCancel" type="button" class="outline">取消</button><button id="supplierSave" type="submit" class="btn">保存收款方</button></div>
   </form>
 </dialog>
 <script>
@@ -260,6 +260,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
   const fields = ['name','category','contact_name','phone','email','account_name','bank_account','bank_name','tax_no','address','notes','status'];
   let entries = [];
   let editing = null;
+  let afterSave = null;
   let page = 0;
   let count = 0;
   let saving = false;
@@ -276,16 +277,16 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
   heading.className = 'head';
   const text = document.createElement('div');
   const title = document.createElement('h2');
-  title.textContent = '供应商管理';
+  title.textContent = '收款方管理';
   const note = document.createElement('p');
   note.className = 'muted';
-  note.textContent = '维护供应商、联系人及银行账户资料';
+  note.textContent = '维护收款方、联系人及银行账户资料';
   text.append(title,note);
   const open = document.createElement('button');
   open.id = 'supplierOpen';
   open.type = 'button';
   open.className = 'btn';
-  open.textContent = '进入供应商管理';
+  open.textContent = '进入收款方管理';
   heading.append(text,open);
   panel.append(heading);
   element('spvPanel').before(panel);
@@ -323,7 +324,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
     }
     if (!entries.length) {
       const row = document.createElement('tr');
-      const empty = cell('暂无供应商，点击“新增供应商”登记');
+      const empty = cell('暂无收款方，点击“新增收款方”登记');
       empty.colSpan = 9;
       row.append(empty);
       element('supplierRows').append(row);
@@ -338,7 +339,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
     const version = ++requestVersion;
     loading = true;
     render();
-    element('supplierMessage').textContent = '正在加载供应商…';
+    element('supplierMessage').textContent = '正在加载收款方…';
     try {
       const query = new URLSearchParams({...filters,page:String(page)});
       const result = await api('/api/suppliers?'+query);
@@ -364,13 +365,14 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
     return load();
   }
 
-  function edit(supplier = null) {
+  function edit(supplier = null, callback = null) {
     if (saving || loading) return;
     editing = supplier;
+    afterSave = callback;
     const form = element('supplierForm');
     form.reset();
     for (const key of fields) form.elements[key].value = supplier?.['xuwen_'+key] ?? (key === 'status' ? 'active' : '');
-    element('supplierEditTitle').textContent = supplier ? '编辑供应商' : '新增供应商';
+    element('supplierEditTitle').textContent = supplier ? '编辑收款方' : '新增收款方';
     element('supplierFormMessage').textContent = '';
     element('supplierEditDialog').showModal();
   }
@@ -393,9 +395,12 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
     setSaving(true);
     element('supplierFormMessage').textContent = '正在保存…';
     try {
-      await api('/api/suppliers/save','POST',data);
+      const saved = await api('/api/suppliers/save','POST',data);
+      const callback = afterSave;
+      afterSave = null;
       element('supplierEditDialog').close();
       await load();
+      if (callback) callback(saved.record);
     } catch (error) {
       element('supplierFormMessage').textContent = error.message;
     } finally { setSaving(false); }
@@ -404,7 +409,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
   async function changeStatus(supplier) {
     if (saving || loading) return;
     const status = supplier.xuwen_status === 'active' ? 'inactive' : 'active';
-    if (!confirm((status === 'active' ? '启用' : '停用')+'供应商“'+supplier.xuwen_name+'”？')) return;
+    if (!confirm((status === 'active' ? '启用' : '停用')+'收款方“'+supplier.xuwen_name+'”？')) return;
     setSaving(true);
     try {
       await api('/api/suppliers/status','POST',{id:supplier.xuwen_id,revision:supplier.xuwen_revision,status});
@@ -413,6 +418,7 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
     finally { setSaving(false); }
   }
 
+  window.xuwenOpenPayeeForm = callback => edit(null,callback);
   open.onclick = () => { element('supplierDialog').showModal();load(); };
   element('supplierClose').onclick = () => { if (!saving) element('supplierDialog').close(); };
   element('supplierCancel').onclick = () => { if (!saving) element('supplierEditDialog').close(); };
@@ -435,4 +441,95 @@ $('summaryToggle').onclick=()=>{const expanded=$('summaryToggle').getAttribute('
 })();
 </script>
 
+<script>
+(() => {
+  'use strict';
+  const element = id => document.getElementById(id);
+  let choices = new Map();
+  let historical = null;
+  let loadVersion = 0;
+
+  function fill(record, snapshot = false) {
+    const form = element('gcForm');
+    const mapping = snapshot
+      ? {counterparty:'xuwen_counterparty',counterparty_account:'xuwen_counterparty_account',counterparty_bank:'xuwen_counterparty_bank',counterparty_contact:'xuwen_counterparty_contact',counterparty_phone:'xuwen_counterparty_phone'}
+      : {counterparty:'xuwen_name',counterparty_account:'xuwen_bank_account',counterparty_bank:'xuwen_bank_name',counterparty_contact:'xuwen_contact_name',counterparty_phone:'xuwen_phone'};
+    for (const [field,key] of Object.entries(mapping)) form.elements[field].value = record?.[key] || '';
+  }
+
+  function render(selected) {
+    const select = element('gcPayeeSelect');
+    select.replaceChildren();
+    const manual = document.createElement('option');
+    manual.value = '';
+    manual.textContent = '手工填写／选择已有收款方';
+    select.append(manual);
+    if (historical) {
+      const option = document.createElement('option');
+      option.value = '__snapshot__';
+      option.textContent = (historical.xuwen_counterparty || '历史交易对方') + '（原流水资料）';
+      select.append(option);
+    }
+    for (const record of choices.values()) {
+      const option = document.createElement('option');
+      option.value = record.xuwen_id;
+      option.textContent = record.xuwen_name + (record.xuwen_bank_account ? ' · 尾号' + record.xuwen_bank_account.slice(-4) : '');
+      select.append(option);
+    }
+    select.value = selected;
+  }
+
+  async function load() {
+    const version = ++loadVersion;
+    element('gcPayeeSelect').disabled = true;
+    element('gcPayeeAdd').disabled = true;
+    element('gcPayeeHint').textContent = '正在加载档案，可先手工填写。';
+    try {
+      const records = new Map();
+      let page = 0;
+      let result;
+      do {
+        result = await api('/api/suppliers?status=active&page=' + page);
+        if (version !== loadVersion) return;
+        for (const record of result.records || []) records.set(record.xuwen_id,record);
+        page++;
+      } while (page * 50 < Number(result.count || 0));
+      choices = records;
+      render(element('gcPayeeSelect').value);
+      element('gcPayeeSelect').disabled = false;
+      element('gcPayeeAdd').disabled = false;
+      element('gcPayeeHint').textContent = '手工填写的收款方会在流水保存成功后自动登记。';
+    } catch (error) {
+      if (version === loadVersion) element('gcPayeeHint').textContent = '档案加载失败，可继续手工填写。' + error.message;
+    }
+  }
+
+  window.xuwenGroupPayeeEdit = record => {
+    historical = record;
+    choices = new Map();
+    render(record ? '__snapshot__' : '');
+    fill(record,true);
+    load();
+  };
+  element('gcPayeeSelect').onchange = () => {
+    const selected = element('gcPayeeSelect').value;
+    if (selected === '__snapshot__') fill(historical,true);
+    else if (selected) fill(choices.get(selected));
+  };
+  element('gcPayeeName').oninput = () => { element('gcPayeeSelect').value = ''; };
+  element('gcPayeeReload').onclick = load;
+  element('gcPayeeAdd').onclick = () => {
+    window.xuwenOpenPayeeForm(record => {
+      if (record.xuwen_status !== 'active') {
+        element('gcPayeeHint').textContent = '收款方已按停用状态保存，启用后可选择。';
+        return;
+      }
+      choices.set(record.xuwen_id,record);
+      render(record.xuwen_id);
+      fill(record);
+    });
+  };
+})();
+
+</script>
 </body></html>
